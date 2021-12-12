@@ -26,6 +26,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }else{
             response.sendRedirect("/");
         }
+        //good
     }
 
 
