@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+        <title>Simple Sidebar - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="/static/a/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="/static/c/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar-->
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="sidebar-heading border-bottom bg-light">마이페이지</div>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/myPrivate">개인정보</a>
+            <div class="list-group list-group-flush">
+                <div class="sidebar-heading border-bottom bg-light">장바구니</div>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/orderList">주문목록</a>
+            </div>
+        </div>
+        <!-- Page content wrapper-->
+        <div id="page-content-wrapper">
+            <!-- Top navigation-->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-primary" id="sidebarToggle">메뉴</button>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                            <li class="nav-item active"><a class="nav-link" href="#!">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#!">Action</a>
+                                    <a class="dropdown-item" href="#!">Another action</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#!">Something else here</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+    <!-- Content Area -->
+            <div class="inner">
+                <br><br><br>
+                <h2 style="height:100px; line-height: 100px;">장바구니</h2>
+                <table class="table table-hover">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="checkAll"/></td>
+                        <td width="180px;">상품이미지</td>
+                        <td width="140px;">상품명</td>
+                        <td>옵션</td>
+                        <td>가격</td>
+                        <td>수량</td>
+                        <td>합계</td>
+                        <td>삭제</td>
+                    </tr>
+                    <tr th:each="pocket:${pocketList}">
+                        <td><input type="checkbox" id="check_id" class="test" th:value="${pocket.getId()}"/>
+                            <input type="hidden" id="checkTest" th:value="${pocket.getSize()}"/>
+                        </td>
+                        <td>
+                            <img th:src="@{'/static/files/'+${pocket.getItem().getFile().getFilename()}}" style="width: 120px;height: 120px;"/>
+                        </td>
+                        <td th:text="${pocket.getItem().getItemName()}"></td>
+                        <td th:text="${pocket.getSize()}">옵션없음</td>
+                        <input type="hidden" th:value="${#lists.size(pocketList)}" id="listValue"/>
+                        <td th:text="${pocket.getItem().getItemPrice()}">10,000원</td>
+                        <td>
+                            <input type="text" th:value="${pocket.getAccount()}" style="width: 30px;" readonly/>개
+                        </td>
+                        <td th:text="${pocket.getItem().getItemPrice()}*${pocket.getAccount()}"></td>
+                        <td id="delete" th:data-id="${pocket.getId()}">
+                            <button type="button" class="btn" style="border-color: whitesmoke; background-color: snow">
+                                <i class="fas fa-trash"></i>
+                                삭제
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                <div class="card">
+                    <div class="card-body" style="background-color: lightskyblue";>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+
+                                </div>
+                                <div class="col" style="text-align: right">
+                                    <p>상품 합계 금액 : <b th:text="${totalPrice}"></b>원</p>
+                                    <p>배송비 : <b>0원</b></p>
+                                    <p>총 주문 합계 금액 : <b th:text="${totalPrice}"></b>원</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 30px;">
+                    <button type="button" id="deleteAll" class="btn btn-outline-secondary">장바구니 비우기</button>
+                    <button type="button" id="orderAll" class="btn btn-outline-success"><a style="text-decoration:none; color: #6c757d">상품 주문 하기</a></button>
+                </div>
+                <br><br><br><br><br><br><br><br><br>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="/static/j/scripts.js"></script>
+    <script>
+        $("#checkAll").click(function(){
+            if($('#checkAll').prop("checked")){
+                $('.test').prop("checked",true);
+            }else{
+                $(".test").prop("checked",false);
+            }
+        });
+        $(".test").click(function(){
+            let size = $('#checkTest').val();
+            if($("input[id=check_id]:checked").length == size) {
+                $('#checkAll').prop("checked",true);
+            }else{
+                $("#checkAll").prop("checked",false);
+            }
+        });
+        $('#orderAll').click(function (){
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            $("input[id=check_id]:checked").each(function() {
+                let test = $(this).val();
+                let data = {id:test};
+                console.log(test);
+                $.ajax({
+                    url:"/orderAll",
+                    data:data,
+                    type:"post",
+                    beforeSend : function(xhr){
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success:function (){
+                        location.replace("/buyClothes");
+                    },
+                    error:function (){
+                        alert("실패");
+                    }
+                });
+            });
+        });
+
+    </script>
+    <script>
+        let a = $('#sumPrice').text();
+        $(document).on("click","#delete",function (){
+           let a = $(this).data("id"); // a = 선택한값의 pocket의 id값
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            $.ajax({
+                url:"/delete",
+                data:{id:a},
+                type:"post",
+                beforeSend : function(xhr){
+                    xhr.setRequestHeader(header, token);
+                },
+                success:function (){
+                  alert("삭제되었습니다.");
+                  location.reload();
+                },
+                error:function (){
+                    alert("실패");
+                }
+            });
+        });
+        $('#deleteAll').click(function (){
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            let listValue = $('#listValue').val();
+            $.ajax({
+                url:"/deleteAll",
+                type:"post",
+                beforeSend : function(xhr){
+                    xhr.setRequestHeader(header, token);
+                },
+                success:function (){
+                    if(listValue >0 ){
+                        alert("삭제되었습니다.");
+                        location.reload();
+                    }else{
+                        alert("삭제할 아이템이 없습니다.");
+                    }
+                },
+                error:function (){
+                    alert("실패");
+                }
+            });
+        });
+     /*   $('#orderAll').click(function (){
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            $.ajax({
+                url:"/orderAll",
+                type:"post",
+                beforeSend : function(xhr){
+                    xhr.setRequestHeader(header, token);
+                },
+                success:function (){
+                    alert("성공")
+                },
+                error:function (){
+                    alert("실패");
+                }
+            });
+        });*/
+
+    </script>
+    </body>
+</th:block>
+<th:block layout:fragment="css">
+    <style>
+        .inner{
+            width: 70%;
+            margin: 0 auto;
+        }
+    </style>
+</th:block>
+
+
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+
+    <div class="container overflow-hidden">
+        <div class="row gx-5">
+            <div class="col" style="margin-top: 100px;">
+                <div class="p-3 border bg-light" id="one">
+                    <img id="two" th:src="@{'/static/files/'+${item.getFile().getFilename()}}" style="width: 370px; height: 570px; background-size: contain; margin-left: 100px;" data-zoom="3" />
+                </div>
+            </div>
+            <div class="col" style="margin-top: 100px;">
+                <div class="p-3 border bg-light">
+                    <p th:text="${item.getItemName()}">맨투맨</p>
+                    <h3 th:text="${item.getItemPrice()}+'원'"></h3>
+                    <hr>
+                    <p>남녀노소 누구나 입기 편한 최고의 소재의 맨투맨 입니다.<br/>
+                        <br>
+                        많은 이용 부탁 드립니다.
+                        <br>
+                        <br>
+                        <b>원산지</b> 대한민국<br>
+                        <b>제조사</b> 제품 내 별도 표기<br>
+                        <b>브랜드</b> YoungStore<br>
+                        <b>배송방법</b> 택배<br>
+                        <b>배송비</b> 무료<br>
+                    <p style="color: grey" data-bs-toggle="popover"  data-bs-content="충청권:+3,000원">지역에 따라 배송비 추가 ✔</p>
+                    </p>
+                    <select class="form-select" name="size" id="sizeSelect" aria-label="Default select example">
+                        <option selected>사이즈 선택(필수)</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                        <p style="color: grey"  data-bs-content="충청권:+3,000원">수량 선택 ✔</p>
+
+                        <div>
+                            <button type="button" onclick="form_btn(1)">+</button>
+                            <input type="text" id="text" value="1" name="account" />
+                            <button type="button" onclick="form_btn(-1)">-</button>
+                        </div>
+                        <br><br><br>
+                        <div style="float: left;">
+                            <button type="button" id="btnBuy" class="btn btn-primary btn-lg" sec:authorize="isAuthenticated()">
+                                <a  style="text-decoration: none;color: white">
+                                    즉시구매
+                                </a>
+                            </button>
+                            </div>
+                        <div style="float: left;">
+                            <button type="button" class="btn btn-primary btn-lg" sec:authorize="!isAuthenticated()">
+                                <a id="loginPage" style="text-decoration: none;color: white">
+                                    즉시구매
+                                </a>
+                            </button>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="isAuthenticated()">
+                                <a id="shoppingBasket" style="text-decoration: none;color: white;">장바구니</a>
+                            </button>
+                            <button class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="!isAuthenticated()">
+                                <a id="loginPage2" style="text-decoration: none;color: white;">장바구니</a>
+                            </button>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+        <div class="card mb-2">
+            <div class="card-header bg-light">
+                <i class="fa fa-comment fa"></i> REPLY
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="form-inline mb-2">
+                            <label for="replyId"><i class="fa fa-user-circle-o fa-2x"></i></label>
+                            <input type="text" class="form-control ml-2" placeholder="아이디 입력란..." id="replyId" th:value="${#authentication.getName()}" readonly>
+                            <label for="replyPassword" class="ml-4"><i class="fa fa-unlock-alt fa-2x"></i></label>
+                            <input type="password" class="form-control ml-2" placeholder="비밀번호..." id="replyPassword">
+                        </div>
+                        <textarea class="form-control" id="replyContent" placeholder="내용..."  rows="3"></textarea>
+                        <button type="button" id="replyBtn" class="btn btn-dark mt-3">작성</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <br><br><br>
+        <div class="card">
+            <div class="card-header">
+                comment
+            </div>
+            <div class="card-body">
+                <div class="row" th:each="replys:${item.getReplyList()}">
+                    <div class="row-cols-3">
+                    <span th:text="${#temporals.format(replys.getReplyLocalDateTime(),'yyyy.MM.dd.HH:mm')}"></span>
+                    </div>
+                    <div class="row-cols-3">
+                        작성자 :
+                        <span th:text="${replys.getMember().getUsername()}"></span>
+                    </div>
+                    <div class="row-cols-3">
+                        내용
+                    </div>
+                    <div class="row-cols-3">
+                        <span th:text="${replys.getReplyContent()}" id="replyContent2"></span>
+                    </div>
+                    <hr>
+                </div>
+
+            </div>
+        </div>
+        <input type="hidden" id="itemId" th:value="${item.getId()}"/>
+    </div>
+</th:block>
+<th:block layout:fragment="script">
+    <script>
+        $('#replyBtn').click(function (){
+            let replyId = $('#replyId').val();
+            let replyPassword = $('#replyPassword').val();
+            let orignalPassword = "";
+            let replyContent = $('#replyContent').val();
+            let itemId = $('#itemId').val();
+            let data = {replyId:replyId,replyPassword:replyPassword,replyContent:replyContent,orignalPassword:orignalPassword,itemId:itemId};
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+           $.ajax({
+               url:"/reply",
+               data:data,
+               type:"post",
+               beforeSend : function(xhr){
+                   xhr.setRequestHeader(header, token);
+               },
+               success:function (result){
+                   if(result.orignalPassword = result.replyPassword) {
+                      alert("댓글이달렸습니다.");
+                   }else{
+                     alert("비밀번호를 혹은 내용을 확인해주세요.");
+                   }
+                   location.reload();
+               },
+               error:function (){
+                   alert("실패");
+               }
+           });
+        });
+        $('#btnBuy').click(function (){
+            let size = $('#sizeSelect').val();
+            let id = $('#itemId').val();
+            let text = $('#text').val();
+            let data = {id: id,size:size,text:text};
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            $.ajax({
+                url:"/dialectBuy",
+                data:data,
+                beforeSend : function(xhr){
+                    xhr.setRequestHeader(header, token);
+                },
+                type:"post",
+                success:function (data){
+                    location.replace("/buyClothes");
+                },
+                error:function (){
+                    alert("실패");
+                }
+            });
+        });
+    </script>
+    <script>
+        function form_btn(n){
+            var text = document.getElementById("text"); // 폼 선택
+            text_val = parseInt(text.value); // 폼 값을 숫자열로 변환
+            text_val += n; // 계산
+            text.value = text_val; // 계산된 값을 바꾼다
+            if(text_val <= 0){
+                text.value = 1;   // 만약 값이 0 이하면 1로 되돌려준다, 1보다 작은 수는 나타나지 않게하기 위해
+            }
+        }
+        let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+        $('#loginPage').click(function (){
+            alert("로그인 후에 이용 가능합니다.");
+            let result = confirm('로그인 페이지로 이동할까요?');
+            if(result){
+                location.replace("/login");
+            }
+        });
+        $('#loginPage2').click(function (){
+            alert("로그인 후에 이용 가능합니다.");
+            let result = confirm('로그인 페이지로 이동할까요?');
+            if(result){
+                location.replace("/login");
+            }
+        });
+        $('#shoppingBasket').click(function (){
+            let id = $('#itemId').val();
+            let size = $('#sizeSelect').val();
+            let text = $('#text').val();
+            let data = {id: id,size:size,text:text};
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            $.ajax({
+                url:"/pocket",
+                data:data,
+                dataType:"JSON",
+                beforeSend : function(xhr){
+                    xhr.setRequestHeader(header, token);
+                },
+                type:"post",
+                success:function (data){
+                        alert("장바구니에 추가되었습니다.");
+                },
+                error:function (){
+                    alert("실패");
+                    console.log(data);
+                }
+            });
+        });
+    </script>
+</th:block>
+<th:block layout:fragment="css">
+    <style>
+        .popover{
+            left: -366px !important;
+        }
+    </style>
+</th:block>
+</html>

@@ -1,0 +1,28 @@
+spring:
+  servlet:
+    multipart:
+      file-size-threshold: 1MB
+      location: C:/Users/newy1/Downloads/reactreact/demo/ToyProject/src/main/resources/static/files/
+      max-file-size: 100MB
+      max-request-size: 100MB
+  h2:
+    console:
+      enabled: true
+      path: /toy
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/toy
+    username: sa
+    password:
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: classpath:/static

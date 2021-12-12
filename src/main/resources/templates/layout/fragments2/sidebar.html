@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org">
+
+
+<th:block th:fragment="sidebarFragment">
+
+  <div class="border-end bg-white" id="sidebar-wrapper">
+    <div class="sidebar-heading border-bottom bg-light">관리자모드</div>
+    <div class="list-group list-group-flush">
+      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/enrollItem">상품 등록</a>
+      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/memberIdentity">회원 정보</a>
+      <a class="list-group-item list-group-item-action list-group-item-light p-3" href="orderCheck">주문 확인</a>
+    </div>
+  </div>
+</th:block>
+</html>

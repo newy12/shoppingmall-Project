@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <div class="inner">
+        <br><br><br>
+        <div class="card">
+            <div class="card-header" style="background-color: white;">
+                <h2>주문 상품</h2>
+                <table class="table table-hover">
+                    <tr style="background-color: whitesmoke">
+                        <td width="180px;">상품이미지</td>
+                        <td width="140px;">상품명</td>
+                        <td>옵션</td>
+                        <td>가격</td>
+                        <td>수량</td>
+                        <td>합계</td>
+                    </tr>
+                    </tr>
+                    <tr style="background-color: whitesmoke" th:each="buy:${buyList}">
+                        <td> <img th:src="@{'/static/files/'+${buy.getItem().getFile().getFilename()}}"
+                                  style="background-size:contain; width: 120px; height: 120px;" class="rounded mx-auto d-block" alt="..."> </td>
+                        <td th:text="${buy.getItem().getItemName()}"></td>
+                        <td th:text="${buy.getSize()}"></td>
+                        <td th:text="${buy.getItem().getItemPrice()}"></td>
+                        <td th:text="${buy.getAccount()}"></td>
+                        <td th:text="${buy.getItem().getItemPrice()}*${buy.getAccount()}"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr style="background-color: whitesmoke">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>총합</td>
+                        <td th:text="${totalPrice}"></td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h2>수령인 정보</h2>
+            </div>
+            <div class="inner2">
+                <div class="input-form-backgroud row">
+                    <div class="col-md-6 mb-3">
+                        <label for="name">수령인</label>
+                        <input type="text" id="name" name="userId" required th:value="${#authentication.name}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name">연락처</label>
+                        <input type="text" id="phone" name="userId" placeholder="-빼고 입력해주세요" required>
+                    </div>
+                    <div class="mb-3">
+                        우편번호 <input type="text" name="zip" disabled/>
+                        <button type="button" onclick="openZipSearch()">우편번호 검색</button>
+                        <br>
+                        주소 <input type="text" name="addr1" style="width:700px; height:30px; margin-top:20px;" disabled/><br>
+                        상세 <input type="text" name="addr2" style="width:700px; height:30px; margin-top:20px;"/>
+                    </div>
+                </div>
+                <br><br><br><br>
+                <div style="text-align: center">
+                <button type="button" class="btn btn-outline-success">주문하기</button>
+                <button type="button" id="cancel" class="btn btn-outline-danger">취소하기</button>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br>
+    </div>
+    </div>
+</th:block>
+<th:block layout:fragment="css">
+    <style>
+        .inner {
+            width: 70%;
+            margin: 0 auto;
+        }
+
+        .inner2 {
+            width: 80%;
+            margin: 0 auto;
+        }
+    </style>
+</th:block>
+<th:block layout:fragment="script">
+    <script>
+        history.pushState(null, null, "http://localhost:8080/buyClothes");
+        window.onpopstate = function(event) {
+            let result = confirm("주문목록을 취소할까요?")
+            if(result){
+                let token = $("meta[name='_csrf']").attr("content");
+                let header = $("meta[name='_csrf_header']").attr("content");
+                $.ajax({
+                    url:"/cancel",
+                    type:"post",
+                    success:function (){
+                        alert("주문이 취소되었습니다.");
+                        location.replace("/");
+                    },
+                    beforeSend : function(xhr){
+                        xhr.setRequestHeader(header, token);
+                    },
+                    error:function (){
+                        alert("실패")
+                    }
+                });
+                location.replace("/");
+            }else{
+                history.go(1);
+            }
+        };
+        $('#cancel').click(function (){
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            $.ajax({
+               url:"/cancel",
+               type:"post",
+               success:function (){
+                   alert("주문이 취소되었습니다.");
+                   location.replace("/");
+               },
+                beforeSend : function(xhr){
+                    xhr.setRequestHeader(header, token);
+                },
+               error:function (){
+                alert("실패")
+               }
+            });
+        });
+    </script>
+    <script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>
+    <script>
+        function openZipSearch() {
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    $('[name=zip]').val(data.zonecode); // 우편번호 (5자리)
+                    $('[name=addr1]').val(data.address);
+                    $('[name=addr2]').val(data.buildingName);
+                }
+            }).open();
+        }
+    </script>
+</th:block>
+</html>

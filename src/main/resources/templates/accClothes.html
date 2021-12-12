@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+  <section id="scroll">
+    <div class="container px-5">
+      <div class="row gx-5 align-items-center" style="margin-top: 160px; margin-bottom: 100px;">
+        <div class="jb-wrap" th:each="items:${item}" th:if="${#lists.isEmpty(items)}">
+          <div class="jb-text">
+            <h2>ㅇㅇㅇㅇ</h2>
+          </div>
+        </div>
+        <div class="jb-wrap" th:each="items:${item}" th:unless="${#lists.isEmpty(items)}">
+          <div class="jb-image">
+            <a th:href="@{'/itemDetail/'+${items.getId()}}">
+              <img th:src="@{'/static/files/'+${items.getFile().getFilename()}}" style="background-size:contain;" class="rounded mx-auto d-block" alt="...">
+            </a>
+          </div>
+          <div class="jb-text">
+            <p th:text="${items.getItemName()}"></p>
+            <h3 th:text="${items.getItemPrice()}+'원'"></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</th:block>
+<th:block layout:fragment="css">
+  <style>
+    .jb-wrap {
+      width: 30%;
+      margin: 10px auto;
+    }
+    .jb-wrap img {
+      width: 100%;
+      vertical-align: middle;
+    }
+    .jb-text {
+      padding: 35px 10px;
+      text-align: center;
+    }
+    .jb-image {
+      overflow: hidden;
+      margin: 0 auto;
+      width: 300px;
+      height: 400px;
+    }
+    .jb-image img{
+      transform: scale(1);
+      transition: transform 0.2s linear;
+    }
+    .jb-image:hover img{
+      transform: scale(1.1);
+    }
+  </style>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorator="~{layout/layout2}">
+<th:block layout:fragment="content">
+  <div class="inner">
+    <table class="table table-hover">
+      <tr>
+        <td><input type="checkbox"></td>
+        <td>회원아이디</td>
+        <td>회원이름</td>
+        <td>주소</td>
+        <td>상세주소</td>
+        <td>가입경로</td>
+      </tr>
+      <tr th:each="members:${member}">
+        <td><input type="checkbox" id="check_id" class="test" th:value="${members.getId()}"/></td>
+          <td th:text="${members.getUserId()}"></td>
+        <td th:text="${members.getUsername()}"></td>
+        <td th:text="${members.getAddress()}"></td>
+        <td th:text="${members.getAddressDetail()}"></td>
+        <td th:text="${members.getSignupPath()}"></td>
+      </tr>
+    </table>
+
+
+  </div>
+</th:block>
+<th:block layout:fragment="css">
+  <style>
+    .inner{
+      width: 70%;
+      margin: 0 auto;
+    }
+  </style>
+</th:block>
+</html>
