@@ -12,7 +12,7 @@ public class FilesService {
 
     private final FilesRepository filesRepository;
 
-    public Files save(Files files) {
-        return filesRepository.save(files);
+    public Files save(Files file) {
+        return filesRepository.save(file);
     }
 }
