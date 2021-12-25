@@ -6,7 +6,7 @@ import com.example.toyproject.entity.Member;
 import com.example.toyproject.repository.FilesRepository;
 import com.example.toyproject.repository.ItemRepository;
 import com.example.toyproject.repository.MemberRepository;
-import com.example.toyproject.service.FilesService;
+import com.example.toyproject.service.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -33,6 +33,11 @@ public class adminController {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final FilesRepository filesRepository;
+    private final ItemService itemService;
+    private final MemberService memberService;
+    private final PocketService pocketService;
+    private final ReplyService replyService;
+    private final FilesService filesService;
 
     @Value("${files.files-dir}")
     private String fileDir;
@@ -47,7 +52,7 @@ public class adminController {
     }
     @PostMapping("/enrollItem")
     public String enrollItem(@AuthenticationPrincipal User user,Item item, @RequestPart MultipartFile files , RedirectAttributes redirectAttributes) throws IOException {
-        Optional<Member> member = memberRepository.findByUserId(user.getUsername());
+        Optional<Member> member = memberService.findByUserId(user.getUsername());
         if(member.isPresent()){
             Files file = new Files();
             String sourceFileName = files.getOriginalFilename();
@@ -56,7 +61,6 @@ public class adminController {
             String destinationFileName;
             String fileUrl = fileDir;
             do {
-                /*destinationFileName = sourceFileName;*/
                 destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
                 destinationFile = new File(fileUrl + destinationFileName);
             } while (destinationFile.exists());
@@ -66,8 +70,8 @@ public class adminController {
             file.setFileOriName(sourceFileName);
             file.setFileurl(fileUrl);
             item.setFile(file);
-            filesRepository.save(file);
-            itemRepository.save(item);
+            filesService.save(file);
+            itemService.save(item);
             redirectAttributes.addFlashAttribute("message","등록되었습니다,");
             return "redirect:/adminPage";
         }
@@ -75,7 +79,7 @@ public class adminController {
     }
     @GetMapping("/memberIdentity")
     public String memberIdentity(Model model){
-        model.addAttribute("member",memberRepository.findAll());
+        model.addAttribute("member",memberService.findAll());
 
         return "admin/memberIdentity";
     }

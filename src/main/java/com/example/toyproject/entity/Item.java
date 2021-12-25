@@ -29,6 +29,8 @@ public class Item {
     @JsonIgnore
     @OneToMany(mappedBy = "item")
     private List<Pocket>  pockets = new ArrayList<>();
-    private String category;
+
+    @Enumerated(EnumType.STRING)
+    private ItemType itemType;
 
 }

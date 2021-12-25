@@ -2,6 +2,10 @@ package com.example.toyproject.controller;
 
 import com.example.toyproject.entity.*;
 import com.example.toyproject.repository.*;
+import com.example.toyproject.service.ItemService;
+import com.example.toyproject.service.MemberService;
+import com.example.toyproject.service.PocketService;
+import com.example.toyproject.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,12 +26,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class ToyController{
 
-    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ItemRepository itemRepository;
-    private final OrderRepository orderRepository;
-    private final PocketRepository pocketRepository;
-    private final ReplyRepository replyRepository;
+    private final ItemService itemService;
+    private final MemberService memberService;
+    private final PocketService pocketService;
+    private final ReplyService replyService;
 
 
     @GetMapping("/")
@@ -37,27 +40,27 @@ public class ToyController{
 
     @GetMapping("/topClothes")
     public String top(Model model) {
-        model.addAttribute("item",itemRepository.findByCategory("Top"));
+        model.addAttribute("item",itemService.findByCategory(ItemType.Top));
         return "topClothes";
     }
     @GetMapping("/bottomClothes")
     public String bottom(Model model) {
-        model.addAttribute("item",itemRepository.findByCategory("Bottom"));
+        model.addAttribute("item",itemService.findByCategory(ItemType.Bottom));
         return "bottomClothes";
     }
     @GetMapping("/shirtClothes")
     public String shirt(Model model) {
-        model.addAttribute("item",itemRepository.findByCategory("Shirt"));
+        model.addAttribute("item",itemService.findByCategory(ItemType.Shirt));
         return "shirtClothes";
     }
     @GetMapping("/shoesClothes")
     public String shoes(Model model) {
-        model.addAttribute("item",itemRepository.findByCategory("Shoes"));
+        model.addAttribute("item",itemService.findByCategory(ItemType.Shoes));
         return "shoesClothes";
     }
     @GetMapping("/accClothes")
     public String acc(Model model) {
-        model.addAttribute("item",itemRepository.findByCategory("Acc"));
+        model.addAttribute("item",itemService.findByCategory(ItemType.Acc));
         return "accClothes";
     }
 
@@ -68,21 +71,19 @@ public class ToyController{
 
     @PostMapping("/signup")
     public String signup(Member member, RedirectAttributes redirectAttributes) {
-        Optional<Member> OptMember = memberRepository.findByUserId(member.getUserId().toLowerCase());
+        Optional<Member> OptMember = memberService.findByUserId(member.getUserId().toLowerCase());
         if (OptMember.isPresent()) {
             redirectAttributes.addFlashAttribute("message", "이미 있는 아이디 입니다.");
             return "redirect:/login";
         } else {
             member.setPassword(passwordEncoder.encode(member.getUserPassword()));
-            System.out.println("memberForm = " + member.getUserId().toLowerCase());
-            System.out.println("memberFormType = " + member.getUserId().getClass().getName());
             String UserIdWord = member.getUserId().toLowerCase();
             if (UserIdWord.equals("admin")) {
                 member.setRole(Role.ADMIN);
             } else {
                 member.setRole(Role.MEMBER);
             }
-            memberRepository.save(member);
+            memberService.save(member);
         }
         redirectAttributes.addFlashAttribute("message", "회원가입 축하드립니다.");
         return "redirect:/login";
@@ -90,7 +91,7 @@ public class ToyController{
 
     @GetMapping("/itemDetail/{id}")
     public String topDetail(@PathVariable(name = "id")Long id,Model model) {
-        model.addAttribute("item",itemRepository.findById(id).get());
+        model.addAttribute("item",itemService.findById(id).get());
         return "itemDetail";
     }
 
@@ -109,9 +110,9 @@ public class ToyController{
 
     @GetMapping("/buyClothes")
     public String buyClothes(@AuthenticationPrincipal User user, Model model) {
-            Optional<Member> OptMember = memberRepository.findByUserId(user.getUsername());
+            Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
             if(OptMember.isPresent()){
-                List<Pocket> list = pocketRepository.findByMemberIdAndLocation(OptMember.get().getId(),Location.order);
+                List<Pocket> list = pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.order);
                 AtomicInteger totalPrice = new AtomicInteger();
                 list.forEach(pocket -> {
                     int price = Integer.parseInt(pocket.getItem().getItemPrice());
@@ -120,7 +121,7 @@ public class ToyController{
                     model.addAttribute("totalPrice",totalPrice);
 
                     //LOCATION = ORDER 인 요소만 뽑기
-                    model.addAttribute("buyList",pocketRepository.findByMemberAndLocation(OptMember.get(),Location.order));
+                    model.addAttribute("buyList",pocketService.findByMemberAndLocation(OptMember.get(),Location.order));
                 });
             return "buyClothes";
         };
@@ -135,9 +136,9 @@ public class ToyController{
     }
     @GetMapping("/myPocket")
     public String myPocket(@AuthenticationPrincipal User user,Model model) {
-        Optional<Member> OptMember = memberRepository.findByUserId(user.getUsername());
+        Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
         //총 합계 구하는 식
-        List<Pocket> list = pocketRepository.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket);
+        List<Pocket> list = pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket);
 
         AtomicInteger totalPrice = new AtomicInteger();
         list.forEach(pocket -> {
@@ -147,7 +148,7 @@ public class ToyController{
         });
 
         if(OptMember.isPresent()){
-            model.addAttribute("pocketList",pocketRepository.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket));
+            model.addAttribute("pocketList",pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket));
             model.addAttribute("totalPrice", totalPrice);
             return "myPocket";
         }
@@ -159,7 +160,7 @@ public class ToyController{
     }
     @GetMapping("/myPrivate")
     public String myPrivate(@AuthenticationPrincipal User user,Model model) {
-        model.addAttribute("member",memberRepository.findByUserId(user.getUsername()));
+        model.addAttribute("member",memberService.findByUserId(user.getUsername()));
         return "myPrivate";
     }
     //장바구니 추가
@@ -171,9 +172,9 @@ public class ToyController{
             return null;
         }
 
-        Optional<Member> OptMember = memberRepository.findByUserId(user.getUsername()); //아이디 = qwe인 사람의 정보
+        Optional<Member> OptMember = memberService.findByUserId(user.getUsername()); //아이디 = qwe인 사람의 정보
         if(OptMember.isPresent()){ //qwe인 사람의 정보가 존재한다면?
-            Optional<Item> OptItem = itemRepository.findById(id); // id = 1 인 아이템의 정보
+            Optional<Item> OptItem = itemService.findById(id); // id = 1 인 아이템의 정보
             if(OptItem.isPresent()){ //id = 1인 아이템이 존재한다면?
                 Pocket pocket = Pocket.builder()
                         .size(size)
@@ -182,7 +183,7 @@ public class ToyController{
                         .member(OptMember.get())
                         .location(Location.pocket)
                         .build();
-                return pocketRepository.save(pocket);
+                return pocketService.save(pocket);
             }
         }
                 return null;
@@ -191,7 +192,7 @@ public class ToyController{
     @PostMapping("/delete")
     @ResponseBody
     public void pocketDelete(Long id) {
-            pocketRepository.deleteById(id);
+        pocketService.deleteById(id);
         }
 
     //수정할코드
@@ -200,25 +201,23 @@ public class ToyController{
     @PostMapping("/deleteAll")
     @ResponseBody
     public void PocketDeleteAll(@AuthenticationPrincipal User user){
-        Optional<Member> OptMember = memberRepository.findByUserId(user.getUsername());
+        Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
         if(OptMember.isPresent()){
-            pocketRepository.deleteByMemberAndLocation(OptMember.get(),Location.pocket);
+            pocketService.deleteByMemberAndLocation(OptMember.get(),Location.pocket);
         }
     }
     //물품 즉시구매
     @PostMapping("/dialectBuy")
     @ResponseBody
-    public void dialectBuy(@AuthenticationPrincipal User user, Long id, String size, String text){
-        Optional<Member> OptMember = memberRepository.findByUserId(user.getUsername());
+    public Pocket dialectBuy(@AuthenticationPrincipal User user, Long id, String size, String text){
+
+        if(("사이즈 선택(필수)").equals(size)){
+            return null;
+        }
+        Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
         if(OptMember.isPresent()){
-            Optional<Item> OptItem = itemRepository.findById(id);
+            Optional<Item> OptItem = itemService.findById(id);
             if(OptItem.isPresent()){
-//                Pocket pocket = new Pocket();
-//                pocket.setSize(size);
-//                pocket.setAccount(text);
-//                pocket.setMember(OptMember.get());
-//                pocket.setItem(OptItem.get());
-//                pocket.setLocation(Location.order);
                 Pocket pocket = Pocket.builder()
                         .size(size)
                         .account(text)
@@ -227,27 +226,28 @@ public class ToyController{
                         .location(Location.order)
                         .build();
 
-                pocketRepository.save(pocket);
+             return pocketService.save(pocket);
             }
         }
+        return null;
     }
     //주문취소
     @PostMapping("/cancel")
     @ResponseBody
     public void cancel(@AuthenticationPrincipal User user){
-        Optional<Member> OptMember = memberRepository.findByUserId(user.getUsername());
+        Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
         if(OptMember.isPresent()){
-            pocketRepository.deleteByMemberAndLocation(OptMember.get(),Location.order);
+            pocketService.deleteByMemberAndLocation(OptMember.get(),Location.order);
         }
     }
     //장바구니 체크한 아이템 장바구니 -> 주문하기
     @PostMapping("/orderAll")
     @ResponseBody
     public void orderAll(Long id){
-        Optional<Pocket> OptPocket = pocketRepository.findById(id);
+        Optional<Pocket> OptPocket = pocketService.findById(id);
             if(OptPocket.isPresent()){
                 OptPocket.get().setLocation(Location.order);
-                pocketRepository.save(OptPocket.get());
+                pocketService.save(OptPocket.get());
             }
     }
     //댓글 달기
@@ -255,8 +255,8 @@ public class ToyController{
     @ResponseBody
     public Reply reply(@AuthenticationPrincipal User user,Long itemId, String replyId, String replyPassword, String replyContent,String orignalPassword, RedirectAttributes redirectAttributes){
 
-        Item item = itemRepository.findById(itemId).get();
-        Member member = memberRepository.findByUserId(user.getUsername()).get();
+        Item item = itemService.findById(itemId).get();
+        Member member = memberService.findByUserId(user.getUsername()).get();
         System.out.println("passwordEncoder.matches(user.getPassword(), replyPassword ) = " + passwordEncoder.matches(replyPassword,member.getUserPassword()));
         if(passwordEncoder.matches(replyPassword,member.getUserPassword())){
             if(replyContent == ""){
@@ -271,7 +271,7 @@ public class ToyController{
                         .member(member)
                         .item(item)
                         .build();
-                return replyRepository.save(reply);
+                return replyService.save(reply);
             }
         }
         return null;

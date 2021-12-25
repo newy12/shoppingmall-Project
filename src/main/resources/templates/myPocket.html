@@ -174,7 +174,7 @@
 
     </script>
     <script>
-        let a = $('#sumPrice').text();
+        let a = $('#sumPrice').text();//
         $(document).on("click","#delete",function (){
            let a = $(this).data("id"); // a = 선택한값의 pocket의 id값
             let token = $("meta[name='_csrf']").attr("content");
@@ -210,6 +210,7 @@
                         alert("삭제되었습니다.");
                         location.reload();
                     }else{
+
                         alert("삭제할 아이템이 없습니다.");
                     }
                 },

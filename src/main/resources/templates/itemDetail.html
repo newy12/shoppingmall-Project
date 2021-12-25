@@ -51,7 +51,7 @@
                             </div>
                         <div style="float: left;">
                             <button type="button" class="btn btn-primary btn-lg" sec:authorize="!isAuthenticated()">
-                                <a id="loginPage" style="text-decoration: none;color: white">
+                                <a id="dialectBuy" style="text-decoration: none;color: white">
                                     즉시구매
                                 </a>
                             </button>
@@ -61,7 +61,7 @@
                                 <a id="shoppingBasket" style="text-decoration: none;color: white;">장바구니</a>
                             </button>
                             <button class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="!isAuthenticated()">
-                                <a id="loginPage2" style="text-decoration: none;color: white;">장바구니</a>
+                                <a id="pocket" style="text-decoration: none;color: white;">장바구니</a>
                             </button>
                         </div>
 
@@ -143,7 +143,11 @@
                    location.reload();
                },
                error:function (){
-                   alert("실패");
+                   alert("로그인 후 댓글 작성이 가능합니다.");
+                   let result = confirm('로그인 페이지로 이동할까요?');
+                   if(result){
+                       location.replace("/login");
+                   }
                }
            });
         });
@@ -163,9 +167,12 @@
                 type:"post",
                 success:function (data){
                     location.replace("/buyClothes");
+                    console.log("1");
                 },
                 error:function (){
-                    alert("실패");
+                    console.log("2");
+                    alert("사이즈를 선택해주세요.");
+                    $('#sizeSelect').focus();
                 }
             });
         });
@@ -184,14 +191,14 @@
         let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl)
         })
-        $('#loginPage').click(function (){
+        $('#dialectBuy').click(function (){
             alert("로그인 후에 이용 가능합니다.");
             let result = confirm('로그인 페이지로 이동할까요?');
             if(result){
                 location.replace("/login");
             }
         });
-        $('#loginPage2').click(function (){
+        $('#pocket').click(function (){
             alert("로그인 후에 이용 가능합니다.");
             let result = confirm('로그인 페이지로 이동할까요?');
             if(result){
@@ -217,6 +224,7 @@
                         alert("장바구니에 추가되었습니다.");
                 },
                 error:function (){
+
                     alert("사이즈를 선택해주세요.");
                     $('#sizeSelect').focus();
                     console.log(data);

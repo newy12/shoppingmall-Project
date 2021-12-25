@@ -13,11 +13,6 @@ public class FilesService {
     private final FilesRepository filesRepository;
 
     public Files save(Files files) {
-        Files f = new Files();
-        f.setFilename(files.getFilename());
-        f.setFileOriName(files.getFileOriName());
-        f.setFileurl(files.getFileurl());
-        f.setItem(files.getItem());
-        return filesRepository.save(f);
+        return filesRepository.save(files);
     }
 }
