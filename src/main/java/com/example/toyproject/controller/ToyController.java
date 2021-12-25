@@ -3,6 +3,7 @@ package com.example.toyproject.controller;
 import com.example.toyproject.entity.*;
 import com.example.toyproject.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +28,7 @@ public class ToyController{
     private final OrderRepository orderRepository;
     private final PocketRepository pocketRepository;
     private final ReplyRepository replyRepository;
+
 
     @GetMapping("/")
     public String main() {
@@ -126,10 +128,6 @@ public class ToyController{
         return null;
     }
 
-    @GetMapping("/shoppingBasket")
-    public String shoppingBasket() {
-        return "shoppingBasket";
-    }
 
     @GetMapping("/myPage")
     public String myPage() {
@@ -168,6 +166,11 @@ public class ToyController{
     @PostMapping("/pocket")
     @ResponseBody
     public Pocket pocket(@AuthenticationPrincipal User user, Long id, String size, String text){
+
+        if(("사이즈 선택(필수)").equals(size)){
+            return null;
+        }
+
         Optional<Member> OptMember = memberRepository.findByUserId(user.getUsername()); //아이디 = qwe인 사람의 정보
         if(OptMember.isPresent()){ //qwe인 사람의 정보가 존재한다면?
             Optional<Item> OptItem = itemRepository.findById(id); // id = 1 인 아이템의 정보

@@ -9,7 +9,7 @@
         <div class="jb-wrap" th:each="items:${item}">
           <div class="jb-image">
             <a th:href="@{'/itemDetail/'+${items.getId()}}">
-              <img th:src="@{'/static/files/'+${items.getFile().getFilename()}}" style="background-size:contain;" class="rounded mx-auto d-block" alt="...">
+              <img th:src="@{'/files/'+${items.getFile().getFilename()}}" style="background-size:contain;" class="rounded mx-auto d-block" alt="...">
             </a>
           </div>
           <div class="jb-text">

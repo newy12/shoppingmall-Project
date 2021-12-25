@@ -10,6 +10,7 @@ import com.example.toyproject.service.FilesService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -33,6 +34,9 @@ public class adminController {
     private final ItemRepository itemRepository;
     private final FilesRepository filesRepository;
 
+    @Value("${files.files-dir}")
+    private String fileDir;
+
     @GetMapping("/adminPage")
     public String adminPage(){
         return "admin/adminPage";
@@ -50,7 +54,7 @@ public class adminController {
             String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
             File destinationFile;
             String destinationFileName;
-            String fileUrl = "C:/Users/newy1/Downloads/reactreact/demo/ToyProject/src/main/resources/static/files/";
+            String fileUrl = fileDir;
             do {
                 /*destinationFileName = sourceFileName;*/
                 destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;

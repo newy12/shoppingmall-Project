@@ -71,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 web
                         .ignoring()
                         .antMatchers("/templates/**","/static/**","/error");
+
         }
 
 

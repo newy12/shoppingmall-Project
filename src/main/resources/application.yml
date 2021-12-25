@@ -2,7 +2,7 @@ spring:
   servlet:
     multipart:
       file-size-threshold: 1MB
-      location: C:/Users/newy1/Downloads/reactreact/demo/ToyProject/src/main/resources/static/files/
+      location: D:\files\
       max-file-size: 100MB
       max-request-size: 100MB
   h2:
@@ -26,3 +26,5 @@ spring:
   web:
     resources:
       static-locations: classpath:/static
+files:
+  files-dir: D:\files\

@@ -19,7 +19,7 @@
                     </tr>
                     </tr>
                     <tr style="background-color: whitesmoke" th:each="buy:${buyList}">
-                        <td> <img th:src="@{'/static/files/'+${buy.getItem().getFile().getFilename()}}"
+                        <td> <img th:src="@{'/files/'+${buy.getItem().getFile().getFilename()}}"
                                   style="background-size:contain; width: 120px; height: 120px;" class="rounded mx-auto d-block" alt="..."> </td>
                         <td th:text="${buy.getItem().getItemName()}"></td>
                         <td th:text="${buy.getSize()}"></td>

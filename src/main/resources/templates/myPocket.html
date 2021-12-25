@@ -76,12 +76,12 @@
                         <td>합계</td>
                         <td>삭제</td>
                     </tr>
-                    <tr th:each="pocket:${pocketList}">
+                    <tr th:each="pocket:${pocketList}" id="listItem">
                         <td><input type="checkbox" id="check_id" class="test" th:value="${pocket.getId()}"/>
                             <input type="hidden" id="checkTest" th:value="${pocket.getSize()}"/>
                         </td>
                         <td>
-                            <img th:src="@{'/static/files/'+${pocket.getItem().getFile().getFilename()}}" style="width: 120px;height: 120px;"/>
+                            <img th:src="@{'/files/'+${pocket.getItem().getFile().getFilename()}}" style="width: 120px;height: 120px;"/>
                         </td>
                         <td th:text="${pocket.getItem().getItemName()}"></td>
                         <td th:text="${pocket.getSize()}">옵션없음</td>
@@ -147,6 +147,10 @@
         $('#orderAll').click(function (){
             let token = $("meta[name='_csrf']").attr("content");
             let header = $("meta[name='_csrf_header']").attr("content");
+            if($('#listItem').val() == null){
+                alert("주문 할 상품이 없습니다.");
+                return null;
+            }
             $("input[id=check_id]:checked").each(function() {
                 let test = $(this).val();
                 let data = {id:test};
