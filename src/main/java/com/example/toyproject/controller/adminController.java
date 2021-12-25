@@ -30,13 +30,8 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 public class adminController {
-    private final MemberRepository memberRepository;
-    private final ItemRepository itemRepository;
-    private final FilesRepository filesRepository;
     private final ItemService itemService;
     private final MemberService memberService;
-    private final PocketService pocketService;
-    private final ReplyService replyService;
     private final FilesService filesService;
 
     @Value("${files.files-dir}")
