@@ -1,13 +1,11 @@
 package com.example.toyproject.controller;
 
 import com.example.toyproject.entity.*;
-import com.example.toyproject.repository.*;
 import com.example.toyproject.service.ItemService;
 import com.example.toyproject.service.MemberService;
 import com.example.toyproject.service.PocketService;
 import com.example.toyproject.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,7 +33,7 @@ public class ToyController{
 
     @GetMapping("/")
     public String main() {
-        return "main";
+        return "index";
     }
 
     @GetMapping("/topClothes")
