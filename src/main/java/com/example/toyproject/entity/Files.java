@@ -1,6 +1,7 @@
 package com.example.toyproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Data
 public class Files {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

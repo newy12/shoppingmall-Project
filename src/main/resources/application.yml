@@ -28,3 +28,7 @@ spring:
       static-locations: classpath:/static
 files:
   files-dir: D:\files\
+server:
+  error:
+    whitelabel:
+      enabled: false

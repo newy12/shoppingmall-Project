@@ -1,6 +1,7 @@
 package com.example.toyproject.controller;
 
 import com.example.toyproject.entity.*;
+import com.example.toyproject.repository.ItemRepository;
 import com.example.toyproject.service.ItemService;
 import com.example.toyproject.service.MemberService;
 import com.example.toyproject.service.PocketService;
@@ -29,7 +30,7 @@ public class ToyController{
     private final MemberService memberService;
     private final PocketService pocketService;
     private final ReplyService replyService;
-
+    private final ItemRepository itemRepository;
 
     @GetMapping("/")
     public String main() {
@@ -62,6 +63,7 @@ public class ToyController{
         return "accClothes";
     }
 
+
     @GetMapping("/signup")
     public String signup() {
         return "signup";
@@ -88,11 +90,21 @@ public class ToyController{
     }
 
     @GetMapping("/itemDetail/{id}")
-    public String topDetail(@PathVariable(name = "id")Long id,Model model) {
-        model.addAttribute("item",itemService.findById(id).get());
-        return "itemDetail";
+    public String topDetail(@PathVariable(name = "id")Long id,Model model,RedirectAttributes redirectAttributes) throws Exception {
+        /*Item item = itemRepository.findById(id).orElseThrow(new Supplier<Exception>() {
+            @Override
+            public Exception get() {
+                return new Exception("잘못된 요청입니다. ㅠㅠ");
+            }
+        });*/
+        Optional<Item> OptItem = itemService.findById(id);
+        if (OptItem.isPresent()) {
+            model.addAttribute("item", OptItem.get());
+            return "itemDetail";
+        }else{
+            return "error/404";
+        }
     }
-
     @GetMapping("/login")
     public String login() {
         return "login";

@@ -11,5 +11,7 @@ import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item,Long> {
 
-    List<Item> findByItemType(ItemType itemType);
+    Item findByItemType(ItemType itemType);
+
+
 }
