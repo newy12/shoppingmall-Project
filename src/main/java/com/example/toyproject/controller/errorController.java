@@ -27,7 +27,10 @@ public class errorController implements ErrorController{
             Integer statusCode = Integer.valueOf(status.toString());
             if(statusCode == HttpStatus.NOT_FOUND.value()){
                 errorPage = "error/404";
-
+                return errorPage;
+            }
+            if(statusCode == HttpStatus.BAD_REQUEST.value()){
+                return errorPage;
             }
         }
         return errorPage;

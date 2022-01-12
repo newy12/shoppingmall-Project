@@ -43,7 +43,7 @@
                         <td>총합</td>
                         <td th:text="${totalPrice}"></td>
                     </tr>
-
+                    <input type="hidden" th:value="${totalPrice}" id="totalPrice"/>
                 </table>
             </div>
         </div>
@@ -55,7 +55,7 @@
                 <div class="input-form-backgroud row">
                     <div class="col-md-6 mb-3">
                         <label for="name">수령인</label>
-                        <input type="text" id="name" name="userId" required th:value="${#authentication.name}">
+                        <input type="text" id="name" name="userId" required>
                     </div>
                     <div class="mb-3">
                         <label for="name">연락처</label>
@@ -65,13 +65,13 @@
                         우편번호 <input type="text" name="zip" disabled/>
                         <button type="button" onclick="openZipSearch()">우편번호 검색</button>
                         <br>
-                        주소 <input type="text" name="addr1" style="width:700px; height:30px; margin-top:20px;" disabled/><br>
-                        상세 <input type="text" name="addr2" style="width:700px; height:30px; margin-top:20px;"/>
+                        주소 <input type="text" name="addr1" id="addr11" style="width:700px; height:30px; margin-top:20px;" disabled/><br>
+                        상세 <input type="text" name="addr2" id="addr22" style="width:700px; height:30px; margin-top:20px;"/>
                     </div>
                 </div>
                 <br><br><br><br>
                 <div style="text-align: center">
-                <button type="button" class="btn btn-outline-success">주문하기</button>
+                <button type="button" id="orderItem" class="btn btn-outline-success">주문하기</button>
                 <button type="button" id="cancel" class="btn btn-outline-danger">취소하기</button>
                 </div>
             </div>
@@ -95,6 +95,46 @@
 </th:block>
 <th:block layout:fragment="script">
     <script>
+
+        $('#orderItem').click(function(e){
+            let totalPrice = $('#totalPrice').val();
+            let name = $('#name').val();
+            let phone = $('#phone').val();
+            let addr11 = $('#addr11').val();
+            let addr22 = $('#addr22').val();
+            if(name =='' || phone =='' || addr11 =='' || addr22 == ''){
+                e.preventDefault();
+                alert("수령인 정보를 전부 기입해주세요.");
+            }else{
+                IMP.init('imp76172294');
+                IMP.request_pay({
+                    pay_method : 'card',
+                    merchant_uid : 'merchant_' + new Date().getTime(),
+                    name : '주문명:결제테스트',
+                    amount : totalPrice, //판매 가격
+                    /*     buyer_email : 'newy12@naver.com',*/
+                    buyer_name : name,
+                    buyer_tel : phone,
+                    buyer_addr : addr11+addr22,
+                    buyer_postcode : '123-456'
+                }, function(rsp) {
+                    if ( rsp.success ) {
+                        var msg = '결제가 완료되었습니다.';
+                        msg += '고유ID : ' + rsp.imp_uid;
+                        msg += '상점 거래ID : ' + rsp.merchant_uid;
+                        msg += '결제 금액 : ' + rsp.paid_amount;
+                        msg += '카드 승인번호 : ' + rsp.apply_num;
+                    } else {
+                        var msg = '결제에 실패하였습니다.';
+                        msg += '에러내용 : ' + rsp.error_msg;
+                    }
+                    alert(msg);
+                });
+            }
+        });
+
+
+
         history.pushState(null, null, "http://localhost:8080/buyClothes");
         window.onpopstate = function(event) {
             let result = confirm("주문목록을 취소할까요?")

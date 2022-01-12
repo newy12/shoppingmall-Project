@@ -57,7 +57,7 @@
                             </button>
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="isAuthenticated()">
+                            <button type="button" class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="isAuthenticated()">
                                 <a id="shoppingBasket" style="text-decoration: none;color: white;">장바구니</a>
                             </button>
                             <button class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="!isAuthenticated()">
@@ -230,6 +230,7 @@
                     console.log(data);
                 }
             });
+
         });
     </script>
 </th:block>

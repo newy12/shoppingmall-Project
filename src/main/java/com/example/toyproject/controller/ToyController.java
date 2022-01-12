@@ -30,7 +30,6 @@ public class ToyController{
     private final MemberService memberService;
     private final PocketService pocketService;
     private final ReplyService replyService;
-    private final ItemRepository itemRepository;
 
     @GetMapping("/")
     public String main() {
