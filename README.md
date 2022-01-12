@@ -8,6 +8,7 @@
 <img src="https://img.shields.io/badge/h2-3766AB?style=flat-square&logo=h2&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/thymeleaf-3766AB?style=flat-square&logo=thymeleaf&logoColor=white"/></a>
 <img src="https://img.shields.io/badge/springSecurity-3766AB?style=flat-square&logo=springSecurity&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/mySql-3766AB?style=flat-square&logo=mySql&logoColor=white"/></a>
 ## 개요
 - 프로젝트명 : YJshoppingMall
 - 기간 : 1달
