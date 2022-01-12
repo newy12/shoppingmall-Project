@@ -26,7 +26,10 @@
 - 파일,이미지 업로드
 - 사용자 정보 리스트 조회
 - 사용자 삭제 권한 기능
-- 사용자가 직접 URL접근방지 예외처리
+- 사용자가 직접 URL접근시 오류방지 예외처리
+- ## ㅇ
+
+
 ## ERD
 ![image](https://user-images.githubusercontent.com/73875312/149170340-6f469c3d-02fd-4e64-8e75-397abc33a1a8.png)
 
