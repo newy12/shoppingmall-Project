@@ -19,7 +19,7 @@
           </div>
           <div class="jb-text">
             <p th:text="${items.getItemName()}"></p>
-            <h3 th:text="${items.getItemPrice()}+'원'"></h3>
+            <h3 th:text="${#numbers.formatInteger(items.getItemPrice(),0, 'COMMA')}+'원'"></h3>
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 @Controller
 public class errorController implements ErrorController{
-
+//git테스트
 /*    public String getErrorPath(){
         return "/error";
         }*/

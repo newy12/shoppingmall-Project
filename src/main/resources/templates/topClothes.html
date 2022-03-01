@@ -6,15 +6,16 @@
     <section id="scroll">
         <div class="container px-5">
             <div class="row gx-5 align-items-center" style="margin-top: 160px; margin-bottom: 100px;">
-                <div class="jb-wrap" th:each="items:${item}" >
+                <div class="jb-wrap" th:each="items:${item}" style="width: 23%;">
                         <div class="jb-image">
                             <a th:href="@{'/itemDetail/'+${items.getId()}}">
                                 <img th:src="@{'/files/'+${items.getFile().getFilename()}}" style="background-size:contain;" class="rounded mx-auto d-block" alt="...">
                             </a>
                         </div>
-                        <div class="jb-text">
+                        <div class="jb-text" style="margin-left: 51px;">
                             <p th:text="${items.getItemName()}"></p>
-                            <h3 th:text="${items.getItemPrice()}+'원'"></h3>
+                            <!--<h3 th:text="${items.getItemPrice()}+'원'"></h3>-->
+                            <h3 th:text="${#numbers.formatInteger(items.getItemPrice(),3, 'COMMA')}+'원'"></h3>
                         </div>
                 </div>
            </div>

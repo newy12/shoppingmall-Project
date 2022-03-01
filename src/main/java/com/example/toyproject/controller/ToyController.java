@@ -38,6 +38,7 @@ public class ToyController{
 
     @GetMapping("/topClothes")
     public String top(Model model) {
+        List<Item> items = itemService.findByCategory(ItemType.Top);
         model.addAttribute("item",itemService.findByCategory(ItemType.Top));
         return "topClothes";
     }

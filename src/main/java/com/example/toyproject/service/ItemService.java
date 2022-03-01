@@ -17,7 +17,7 @@ public class ItemService {
 
 
 
-    public Item findByCategory(ItemType itemType) {
+    public List<Item> findByCategory(ItemType itemType) {
         return itemRepository.findByItemType(itemType);
     }
 

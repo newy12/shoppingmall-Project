@@ -5,11 +5,13 @@ spring:
     password: dudwo123
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database: mysql
-    show-sql: true
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: update
+    database: mysql
+    show-sql: true
+
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
 
   servlet:
     multipart:
