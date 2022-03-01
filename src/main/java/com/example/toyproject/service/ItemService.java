@@ -28,4 +28,8 @@ public class ItemService {
     public Item save(Item item) {
         return itemRepository.save(item);
     }
+
+    public List<Item> findByItemNameContaining(String keyword) {
+        return itemRepository.findByItemNameContaining(keyword);
+    }
 }

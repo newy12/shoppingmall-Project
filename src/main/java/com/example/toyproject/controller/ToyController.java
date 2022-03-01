@@ -36,6 +36,13 @@ public class ToyController{
         return "index";
     }
 
+    @GetMapping("/search")
+    public String topSearch(String keyword, Model model){
+        List<Item> item = itemService.findByItemNameContaining(keyword);
+        model.addAttribute("item",item);
+        return "shirtClothes";
+    }
+
     @GetMapping("/topClothes")
     public String top(Model model) {
         List<Item> items = itemService.findByCategory(ItemType.Top);

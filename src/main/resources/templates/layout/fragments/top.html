@@ -25,6 +25,12 @@
                 </li>
             </ul>-->
             <ul class="navbar-nav ms-auto" sec:authorize="!isAuthenticated()">
+                <form action="/search" method="get">
+                <li class="nav-item">
+                    <input type="text" name="keyword" />
+                    <button type="submit">검색</button>
+                </li>
+                </form>
                 <li class="nav-item">
                     <a class="nav-link" href="/signup">회원가입</a>
                 </li>
