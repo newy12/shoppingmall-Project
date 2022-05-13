@@ -35,7 +35,8 @@
                     <a class="nav-link" href="/signup">회원가입</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">로그인</a>
+                    <a  class="nav-link" href="/login">로그인</a>
+                    <!--<a th:unless="${access_token == null}" class="nav-link" th:text="${email}"></a>-->
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto" sec:authorize="isAuthenticated()">

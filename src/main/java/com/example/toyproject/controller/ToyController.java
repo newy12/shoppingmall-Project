@@ -7,15 +7,20 @@ import com.example.toyproject.service.MemberService;
 import com.example.toyproject.service.PocketService;
 import com.example.toyproject.service.ReplyService;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
@@ -35,6 +40,7 @@ public class ToyController{
     public String main() {
         return "index";
     }
+
 
     @GetMapping("/search")
     public String topSearch(String keyword, Model model){
@@ -98,12 +104,6 @@ public class ToyController{
 
     @GetMapping("/itemDetail/{id}")
     public String topDetail(@PathVariable(name = "id")Long id,Model model,RedirectAttributes redirectAttributes) throws Exception {
-        /*Item item = itemRepository.findById(id).orElseThrow(new Supplier<Exception>() {
-            @Override
-            public Exception get() {
-                return new Exception("잘못된 요청입니다. ㅠㅠ");
-            }
-        });*/
         Optional<Item> OptItem = itemService.findById(id);
         if (OptItem.isPresent()) {
             model.addAttribute("item", OptItem.get());
@@ -113,7 +113,7 @@ public class ToyController{
         }
     }
     @GetMapping("/login")
-    public String login() {
+    public String login() throws Exception {
         return "login";
     }
 
@@ -292,5 +292,34 @@ public class ToyController{
             }
         }
         return null;
+    }
+    @GetMapping("/oauth/kakao/callback")
+    public String kakaoOauthRedirect(@RequestParam String code,Model model){
+        RestJsonService restJsonService = new RestJsonService();
+
+        //access_token이 포함된 JSON String을 받아온다.
+        String accessTokenJsonData = restJsonService.getAccessTokenJsonData(code);
+        if(accessTokenJsonData=="error") return "error";
+
+        //JSON String -> JSON Object
+        JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
+
+        //access_token 추출
+        String accessToken = accessTokenJsonObject.get("access_token").toString();
+        GetUserInfoService getUserInfoService = new GetUserInfoService();
+        String userInfo = getUserInfoService.getUserInfo(accessToken);
+
+        //JSON String -> JSON Object
+        JSONObject userInfoJsonObject = new JSONObject(userInfo);
+
+        //유저의 Email 추출
+        JSONObject kakaoAccountJsonObject = (JSONObject)userInfoJsonObject.get("kakao_account");
+        String email = kakaoAccountJsonObject.get("email").toString();
+
+
+        //View에서 사용할 변수 설정
+        model.addAttribute("email", email);
+        model.addAttribute("access_token", accessToken);
+        return "index";
     }
 }

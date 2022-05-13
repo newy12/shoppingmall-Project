@@ -14,10 +14,6 @@ import java.util.logging.Logger;
 
 @Controller
 public class errorController implements ErrorController{
-//git테스트
-/*    public String getErrorPath(){
-        return "/error";
-        }*/
     @GetMapping("/error")
     public String handleError(HttpServletRequest request, Model model){
         String errorPage = "error";
@@ -26,7 +22,6 @@ public class errorController implements ErrorController{
         if(status != null){
             Integer statusCode = Integer.valueOf(status.toString());
             if(statusCode == HttpStatus.NOT_FOUND.value()){
-                errorPage = "error/404";
                 return errorPage;
             }
             if(statusCode == HttpStatus.BAD_REQUEST.value()){

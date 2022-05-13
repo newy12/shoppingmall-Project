@@ -23,57 +23,57 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-        private final UserDetailsService userDetailsService;
-        private final DataSource dataSource;
-        private final CustomAuthenticationSuccessHandler customSuccessHandler;
+    private final UserDetailsService userDetailsService;
+    private final DataSource dataSource;
+    private final CustomAuthenticationSuccessHandler customSuccessHandler;
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .rememberMe()
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository())
+                .and()
+                .authorizeRequests()
+                .antMatchers("/signup", "/login", "/shoppingBasket", "/topClothes", "/topDetail", "/shoppingBasket", "/","/oauth/kakao/callback", "/myPage", "/test", "/adminPage", "/**")
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .successHandler(customSuccessHandler)
+                .failureUrl("/fail")
+                .permitAll()
+                .and()
+                .logout()
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+        ;
+    }
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception
-        {
-                http
-                    .rememberMe()
-                    .userDetailsService(userDetailsService)
-                    .tokenRepository(tokenRepository())
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers("/signup","/login","/shoppingBasket","/topClothes","/topDetail","/shoppingBasket","/","/myPage","/test","/adminPage","/**")
-                    .permitAll()
-                    .anyRequest().authenticated()
-                    .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/")
-                    .successHandler(customSuccessHandler)
-                    .failureUrl("/fail")
-                    .permitAll()
-                    .and()
-                    .logout()
-                    .logoutSuccessUrl("/")
-                    .invalidateHttpSession(true)
-            ;
-        }
-        @Bean
-        public PersistentTokenRepository tokenRepository() {
-                JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
-                jdbcTokenRepository.setDataSource(dataSource);
-                return jdbcTokenRepository;
-        }
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-                auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        }
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-                web
-                        .ignoring()
-                        .antMatchers("/templates/**","/static/**","/error");
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
+    }
 
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/templates/**", "/static/**", "/error");
+    }
 
 
 }
