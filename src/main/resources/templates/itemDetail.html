@@ -77,8 +77,9 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <div class="form-inline mb-2">
-                            <label for="replyId"><i class="fa fa-user-circle-o fa-2x"></i></label>
-                            <input type="text" class="form-control ml-2" placeholder="아이디 입력란..." id="replyId" th:value="${#authentication.getName()}" readonly>
+                            <label th:for="replyId"><i class="fa fa-user-circle-o fa-2x"></i></label>
+                            <input type="text" th:if="${session.name == null}" class="form-control ml-2" placeholder="아이디 입력란..." th:id="replyId" th:value="${#authentication.name}" readonly>
+                            <input type="text" th:unless="${session.name == null}" class="form-control ml-2" placeholder="아이디 입력란..." th:id="replyId" th:value="${session.userName}" readonly>
                             <label for="replyPassword" class="ml-4"><i class="fa fa-unlock-alt fa-2x"></i></label>
                             <input type="password" class="form-control ml-2" placeholder="비밀번호..." id="replyPassword">
                         </div>
@@ -94,7 +95,7 @@
                 comment
             </div>
             <div class="card-body">
-                <div class="row" th:each="replys:${item.getReplyList()}">
+                <div class="row" th:each="replys:${replyList}">
                     <div class="row-cols-3">
                     <span th:text="${#temporals.format(replys.getReplyLocalDateTime(),'yyyy.MM.dd.HH:mm')}"></span>
                     </div>
@@ -139,6 +140,7 @@
                       alert("댓글이달렸습니다.");
                    }else{
                      alert("비밀번호를 혹은 내용을 확인해주세요.");
+                     alert("카카오로그인이라면 댓글이 달립니다.");
                    }
                    location.reload();
                },

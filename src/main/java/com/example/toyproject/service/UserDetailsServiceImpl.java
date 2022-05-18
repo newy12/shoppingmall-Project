@@ -33,9 +33,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         if (member.getUserId().equals("admin")) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
+            grantedAuthorities.add(new SimpleGrantedAuthority(Role.ADMIN.getKey()));
         } else {
-            grantedAuthorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
+            grantedAuthorities.add(new SimpleGrantedAuthority(Role.MEMBER.getKey()));
         }
         return new User(member.getUserId(), member.getUserPassword(), grantedAuthorities);
     }

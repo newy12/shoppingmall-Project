@@ -68,13 +68,14 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <tr>
             <th scope="row" style="width: 100px; height: 70px;">이름</th>
-            <td><input type="text" style="width: 500px;" value="***" readonly th:name="${member.get().getUsername()}"/></td>
+            <td><input type="text" style="width: 500px;" th:value="${member.get().getUsername()}" readonly th:name="${member.get().getUsername()}"/></td>
             <td></td>
             <td></td>
           </tr>
           <tr>
             <th scope="row" style="width: 100px; height: 70px;">아이디</th>
-            <td><input type="text" style="width: 500px;" th:value="${#authentication.name}" readonly th:name="${member.get().getUserId()}"/></td>
+            <td th:if="${session.userName == null}"><input type="text" style="width: 500px;" th:value="${#authentication.name}" readonly th:name="${member.get().getUserId()}"/></td>
+            <td th:unless="${session.userName == null}"><input type="text" style="width: 500px;" th:value="${session.userName}" readonly th:name="${member.get().getUserId()}"/></td>
             <td></td>
             <td></td>
           </tr>

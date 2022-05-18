@@ -41,7 +41,8 @@
             </ul>
             <ul class="navbar-nav ms-auto" sec:authorize="isAuthenticated()">
                 <a class="nav-link" href="/myPrivate">MyPage</a>
-                <a class="nav-link" sec:authentication="name"></a>
+                <a class="nav-link"  th:if="${session.userName} == null" sec:authentication="name"></a>
+                <a class="nav-link" th:unless="${session.userName} == null" th:text="${session.userName}"></a>
                 <a class="nav-link" sec:authorize="hasRole('ADMIN')" href="/adminPage">관리자모드</a>
                 <li class="nav-item">
                     <form action="/logout" name="logout" method="post">

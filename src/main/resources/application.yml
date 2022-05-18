@@ -1,4 +1,21 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 3cca71a9a0ad0f56db1fd20b193a9074
+            redirect-uri : "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization_uri : https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
   thymeleaf:
     cache: false
   datasource:
@@ -45,7 +62,7 @@ spring:
     resources:
       static-locations: classpath:/static
 files:
-  files-dir: D:\files\
+  files-dir: /Users/kimyoungjae/Desktop/파일폴더/
 server:
   error:
     whitelabel:

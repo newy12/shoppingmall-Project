@@ -25,6 +25,7 @@ public class Member implements UserDetails {
     private String userPassword;
     private String address;
     private String addressDetail;
+    private String kakaoEmail;
     private String signupPath;
     @OneToMany(mappedBy = "member")
     private List<Orders> orders = new ArrayList<>();
@@ -44,6 +45,10 @@ public class Member implements UserDetails {
     private Role role;
 /*    @OneToMany(mappedBy = "member")
     private List<Item> itemList = new ArrayList<>();*/
+
+    public String getRoleKey(){
+        return this.role.getKey();
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();

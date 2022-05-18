@@ -22,7 +22,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler  {
 
-    private final MemberRepository memberRepository;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 로그인 성공 시 UserDetails에 담긴 사용자 정보 => 아이디 = admin 이면 /adminPage  아이디 = admin가 아니면 / 이동

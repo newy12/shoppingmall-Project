@@ -1,30 +1,23 @@
 package com.example.toyproject.controller;
 
 import com.example.toyproject.entity.*;
-import com.example.toyproject.repository.ItemRepository;
 import com.example.toyproject.service.ItemService;
 import com.example.toyproject.service.MemberService;
 import com.example.toyproject.service.PocketService;
 import com.example.toyproject.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -105,8 +98,11 @@ public class ToyController{
     @GetMapping("/itemDetail/{id}")
     public String topDetail(@PathVariable(name = "id")Long id,Model model,RedirectAttributes redirectAttributes) throws Exception {
         Optional<Item> OptItem = itemService.findById(id);
+        //내림차순 정렬 (댓글)
+        List<Reply> replyList = replyService.findAllByItemId(id);
         if (OptItem.isPresent()) {
             model.addAttribute("item", OptItem.get());
+            model.addAttribute("replyList", replyList);
             return "itemDetail";
         }else{
             return "error/404";
@@ -152,32 +148,45 @@ public class ToyController{
         return "myPage";
     }
     @GetMapping("/myPocket")
-    public String myPocket(@AuthenticationPrincipal User user,Model model) {
-        Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
-        //총 합계 구하는 식
-        List<Pocket> list = pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket);
-
-        AtomicInteger totalPrice = new AtomicInteger();
-        list.forEach(pocket -> {
-            int price = Integer.parseInt(pocket.getItem().getItemPrice());
-            int account = Integer.parseInt(pocket.getAccount());
-            totalPrice.addAndGet(price * account);
-        });
-
-        if(OptMember.isPresent()){
-            model.addAttribute("pocketList",pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket));
+    public String myPocket(@AuthenticationPrincipal User user,HttpSession httpSession,Model model) {
+        if(httpSession.getAttribute("name") == null){
+            Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
+                //총 합계 구하는 식
+                List<Pocket> list = pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket);
+                AtomicInteger totalPrice = new AtomicInteger();
+                list.forEach(pocket -> {
+                    int price = Integer.parseInt(pocket.getItem().getItemPrice());
+                    int account = Integer.parseInt(pocket.getAccount());
+                    totalPrice.addAndGet(price * account);
+                    model.addAttribute("pocketList", pocketService.findByMemberIdAndLocation(OptMember.get().getId(), Location.pocket));
+                    model.addAttribute("totalPrice", totalPrice);
+                });
+        } else{
+            Optional<Member> kakaomember = memberService.findByUserId((String) httpSession.getAttribute("userName"));
+            //총 합계 구하는 식
+            List<Pocket> list = pocketService.findByMemberIdAndLocation(kakaomember.get().getId(),Location.pocket);
+            AtomicInteger totalPrice = new AtomicInteger();
+            list.forEach(pocket -> {
+                int price = Integer.parseInt(pocket.getItem().getItemPrice());
+                int account = Integer.parseInt(pocket.getAccount());
+                totalPrice.addAndGet(price * account);
+            });
+            model.addAttribute("pocketList",pocketService.findByMemberIdAndLocation(kakaomember.get().getId(),Location.pocket));
             model.addAttribute("totalPrice", totalPrice);
-            return "myPocket";
         }
-        return null;
+        return "myPocket";
     }
     @GetMapping("/orderList")
     public String orderList() {
         return "orderList";
     }
     @GetMapping("/myPrivate")
-    public String myPrivate(@AuthenticationPrincipal User user,Model model) {
-        model.addAttribute("member",memberService.findByUserId(user.getUsername()));
+    public String myPrivate(@AuthenticationPrincipal User user,HttpSession httpSession, Model model) {
+        if(httpSession.getAttribute("name") != null){
+            model.addAttribute("member",memberService.findByUserId((String)httpSession.getAttribute("userName")));
+        }else{
+            model.addAttribute("member",memberService.findByUserId(user.getUsername()));
+        }
         return "myPrivate";
     }
     //장바구니 추가
@@ -270,30 +279,46 @@ public class ToyController{
     //댓글 달기
     @PostMapping("/reply")
     @ResponseBody
-    public Reply reply(@AuthenticationPrincipal User user,Long itemId, String replyId, String replyPassword, String replyContent,String orignalPassword, RedirectAttributes redirectAttributes){
-
-        Item item = itemService.findById(itemId).get();
-        Member member = memberService.findByUserId(user.getUsername()).get();
-        System.out.println("passwordEncoder.matches(user.getPassword(), replyPassword ) = " + passwordEncoder.matches(replyPassword,member.getUserPassword()));
-        if(passwordEncoder.matches(replyPassword,member.getUserPassword())){
-            if(replyContent == ""){
-                redirectAttributes.addFlashAttribute("message","내용을 입력해주세요.");
-                return null;
-            }else{
-                Reply reply = Reply.builder()
-                        .replyPassword(passwordEncoder.encode(replyPassword))
-                        .replyId(replyId)
-                        .replyContent(replyContent)
-                        .orignalPassword(member.getUserPassword())
-                        .member(member)
-                        .item(item)
-                        .build();
-                return replyService.save(reply);
-            }
+    public Reply reply(@AuthenticationPrincipal User user,HttpSession httpSession,Long itemId, String replyId, String replyPassword, String replyContent,String orignalPassword, RedirectAttributes redirectAttributes){
+        if(httpSession.getAttribute("name") == null){
+            Item item = itemService.findById(itemId).get();
+            Member member = memberService.findByUserId(user.getUsername()).get();
+            System.out.println("passwordEncoder.matches(user.getPassword(), replyPassword ) = " + passwordEncoder.matches(replyPassword,member.getUserPassword()));
+            if(passwordEncoder.matches(replyPassword,member.getUserPassword())){
+                if(replyContent == ""){
+                    redirectAttributes.addFlashAttribute("message","내용을 입력해주세요.");
+                    return null;
+                }else{
+                    Reply reply = Reply.builder()
+                            .replyPassword(passwordEncoder.encode(replyPassword))
+                            .replyId(replyId)
+                            .replyContent(replyContent)
+                            .orignalPassword(member.getUserPassword())
+                            .member(member)
+                            .item(item)
+                            .build();
+                    return replyService.save(reply);
+                }
+        }
+        }else{
+            Item item = itemService.findById(itemId).get();
+            Member member = memberService.findByUserId((String) httpSession.getAttribute("name")).get();
+                if(replyContent == ""){
+                    redirectAttributes.addFlashAttribute("message","내용을 입력해주세요.");
+                    return null;
+                }else{
+                    Reply reply = Reply.builder()
+                            .replyId(replyId)
+                            .replyContent(replyContent)
+                            .member(member)
+                            .item(item)
+                            .build();
+                    return replyService.save(reply);
+                }
         }
         return null;
     }
-    @GetMapping("/oauth/kakao/callback")
+/*    @GetMapping("/oauth/kakao/callback")
     public String kakaoOauthRedirect(@RequestParam String code,Model model){
         RestJsonService restJsonService = new RestJsonService();
 
@@ -321,5 +346,5 @@ public class ToyController{
         model.addAttribute("email", email);
         model.addAttribute("access_token", accessToken);
         return "index";
-    }
+    }*/
 }
