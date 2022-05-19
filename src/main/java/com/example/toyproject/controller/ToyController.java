@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -122,7 +121,8 @@ public class ToyController{
     }
 
     @GetMapping("/buyClothes")
-    public String buyClothes(@AuthenticationPrincipal User user, Model model) {
+    public String buyClothes(@AuthenticationPrincipal User user,HttpSession httpSession, Model model) {
+        if(httpSession.getAttribute("userName") == null){
             Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
             if(OptMember.isPresent()){
                 List<Pocket> list = pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.order);
@@ -136,8 +136,25 @@ public class ToyController{
                     //LOCATION = ORDER 인 요소만 뽑기
                     model.addAttribute("buyList",pocketService.findByMemberAndLocation(OptMember.get(),Location.order));
                 });
-            return "buyClothes";
-        };
+                return "buyClothes";
+            };
+        }else{
+            Optional<Member> OptMember = memberService.findByUserId((String) httpSession.getAttribute("userName"));
+            if(OptMember.isPresent()){
+                List<Pocket> list = pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.order);
+                AtomicInteger totalPrice = new AtomicInteger();
+                list.forEach(pocket -> {
+                    int price = Integer.parseInt(pocket.getItem().getItemPrice());
+                    int account = Integer.parseInt(pocket.getAccount());
+                    totalPrice.addAndGet(price * account);
+                    model.addAttribute("totalPrice",totalPrice);
+
+                    //LOCATION = ORDER 인 요소만 뽑기
+                    model.addAttribute("buyList",pocketService.findByMemberAndLocation(OptMember.get(),Location.order));
+                });
+                return "buyClothes";
+            };
+        }
 
         return null;
     }
@@ -149,7 +166,7 @@ public class ToyController{
     }
     @GetMapping("/myPocket")
     public String myPocket(@AuthenticationPrincipal User user,HttpSession httpSession,Model model) {
-        if(httpSession.getAttribute("name") == null){
+        if(httpSession.getAttribute("userName") == null){
             Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
                 //총 합계 구하는 식
                 List<Pocket> list = pocketService.findByMemberIdAndLocation(OptMember.get().getId(),Location.pocket);
@@ -192,27 +209,43 @@ public class ToyController{
     //장바구니 추가
     @PostMapping("/pocket")
     @ResponseBody
-    public Pocket pocket(@AuthenticationPrincipal User user, Long id, String size, String text){
+    public Pocket pocket(@AuthenticationPrincipal User user,HttpSession httpSession ,Long id, String size, String text){
 
         if(("사이즈 선택(필수)").equals(size)){
             return null;
         }
-
-        Optional<Member> OptMember = memberService.findByUserId(user.getUsername()); //아이디 = qwe인 사람의 정보
-        if(OptMember.isPresent()){ //qwe인 사람의 정보가 존재한다면?
-            Optional<Item> OptItem = itemService.findById(id); // id = 1 인 아이템의 정보
-            if(OptItem.isPresent()){ //id = 1인 아이템이 존재한다면?
-                Pocket pocket = Pocket.builder()
-                        .size(size)
-                        .account(text)
-                        .item(OptItem.get())
-                        .member(OptMember.get())
-                        .location(Location.pocket)
-                        .build();
-                return pocketService.save(pocket);
+        if(httpSession.getAttribute("userName") == null){
+            Optional<Member> OptMember = memberService.findByUserId(user.getUsername()); //아이디 = qwe인 사람의 정보
+            if(OptMember.isPresent()){ //qwe인 사람의 정보가 존재한다면?
+                Optional<Item> OptItem = itemService.findById(id); // id = 1 인 아이템의 정보
+                if(OptItem.isPresent()){ //id = 1인 아이템이 존재한다면?
+                    Pocket pocket = Pocket.builder()
+                            .size(size)
+                            .account(text)
+                            .item(OptItem.get())
+                            .member(OptMember.get())
+                            .location(Location.pocket)
+                            .build();
+                    return pocketService.save(pocket);
+                }
+            }
+        }else{
+            Optional<Member> OptMember = memberService.findByUserId((String)httpSession.getAttribute("userName")); //아이디 = qwe인 사람의 정보
+            if(OptMember.isPresent()){ //qwe인 사람의 정보가 존재한다면?
+                Optional<Item> OptItem = itemService.findById(id); // id = 1 인 아이템의 정보
+                if(OptItem.isPresent()){ //id = 1인 아이템이 존재한다면?
+                    Pocket pocket = Pocket.builder()
+                            .size(size)
+                            .account(text)
+                            .item(OptItem.get())
+                            .member(OptMember.get())
+                            .location(Location.pocket)
+                            .build();
+                    return pocketService.save(pocket);
+                }
             }
         }
-                return null;
+            return null;
     }
     //장바구니 삭제
     @PostMapping("/delete")
@@ -235,26 +268,41 @@ public class ToyController{
     //물품 즉시구매
     @PostMapping("/dialectBuy")
     @ResponseBody
-    public Pocket dialectBuy(@AuthenticationPrincipal User user, Long id, String size, String text){
+    public Pocket dialectBuy(@AuthenticationPrincipal User user,HttpSession httpSession, Long id, String size, String text){
+        if(httpSession.getAttribute("name") == null){
+            Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
+            if(OptMember.isPresent()){
+                Optional<Item> OptItem = itemService.findById(id);
+                if(OptItem.isPresent()){
+                    Pocket pocket = Pocket.builder()
+                            .size(size)
+                            .account(text)
+                            .item(OptItem.get())
+                            .member(OptMember.get())
+                            .location(Location.order)
+                            .build();
 
-        if(("사이즈 선택(필수)").equals(size)){
-            return null;
-        }
-        Optional<Member> OptMember = memberService.findByUserId(user.getUsername());
-        if(OptMember.isPresent()){
-            Optional<Item> OptItem = itemService.findById(id);
-            if(OptItem.isPresent()){
-                Pocket pocket = Pocket.builder()
-                        .size(size)
-                        .account(text)
-                        .item(OptItem.get())
-                        .member(OptMember.get())
-                        .location(Location.order)
-                        .build();
+                    return pocketService.save(pocket);
+                }
+            }
+        }else{
+            Optional<Member> OptMember = memberService.findByUserId((String) httpSession.getAttribute("name"));
+            if(OptMember.isPresent()){
+                Optional<Item> OptItem = itemService.findById(id);
+                if(OptItem.isPresent()){
+                    Pocket pocket = Pocket.builder()
+                            .size(size)
+                            .account(text)
+                            .item(OptItem.get())
+                            .member(OptMember.get())
+                            .location(Location.order)
+                            .build();
 
-             return pocketService.save(pocket);
+                    return pocketService.save(pocket);
+                }
             }
         }
+
         return null;
     }
     //주문취소

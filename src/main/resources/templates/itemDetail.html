@@ -58,10 +58,10 @@
                         </div>
                         <div>
                             <button type="button" class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="isAuthenticated()">
-                                <a id="shoppingBasket" style="text-decoration: none;color: white;">장바구니</a>
+                                <a th:id="shoppingBasket" style="text-decoration: none;color: white;">장바구니</a>
                             </button>
                             <button class="btn btn-secondary btn-lg" style="margin-left: 10px;" sec:authorize="!isAuthenticated()">
-                                <a id="pocket" style="text-decoration: none;color: white;">장바구니</a>
+                                <a th:id="shoppingBasket" style="text-decoration: none;color: white;">장바구니</a>
                             </button>
                         </div>
 
@@ -160,6 +160,12 @@
             let data = {id: id,size:size,text:text};
             let token = $("meta[name='_csrf']").attr("content");
             let header = $("meta[name='_csrf_header']").attr("content");
+
+            if(size == "사이즈 선택(필수)"){
+                alert("사이즈를 선택해주세요.");
+                $('#sizeSelect').focus();
+                return false;
+            }
             $.ajax({
                 url:"/dialectBuy",
                 data:data,
@@ -169,10 +175,9 @@
                 type:"post",
                 success:function (data){
                     location.replace("/buyClothes");
-                    console.log("1");
+
                 },
-                error:function (){
-                    console.log("2");
+                error:function (){;
                     alert("사이즈를 선택해주세요.");
                     $('#sizeSelect').focus();
                 }
