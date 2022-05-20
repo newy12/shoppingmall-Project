@@ -1,4 +1,16 @@
 spring:
+  mail:
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+    host: smtp.gmail.com
+    port: 587
+    username: kimyoungjae.dev@gmail.com
+    password: uyuvkjgxobgjdlxc
+
   security:
     oauth2:
       client:

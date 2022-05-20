@@ -1,10 +1,7 @@
 package com.example.toyproject.controller;
 
 import com.example.toyproject.entity.*;
-import com.example.toyproject.service.ItemService;
-import com.example.toyproject.service.MemberService;
-import com.example.toyproject.service.PocketService;
-import com.example.toyproject.service.ReplyService;
+import com.example.toyproject.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -27,6 +24,7 @@ public class ToyController{
     private final MemberService memberService;
     private final PocketService pocketService;
     private final ReplyService replyService;
+    private final MailService mailService;
 
     @GetMapping("/")
     public String main() {
@@ -366,33 +364,11 @@ public class ToyController{
         }
         return null;
     }
-/*    @GetMapping("/oauth/kakao/callback")
-    public String kakaoOauthRedirect(@RequestParam String code,Model model){
-        RestJsonService restJsonService = new RestJsonService();
+  @PostMapping("/passwordClean")
+  @ResponseBody
+    public String passwordClean(@AuthenticationPrincipal User user, String email){
+      mailService.sendMail(user,email);
+        return email;
+  }
 
-        //access_token이 포함된 JSON String을 받아온다.
-        String accessTokenJsonData = restJsonService.getAccessTokenJsonData(code);
-        if(accessTokenJsonData=="error") return "error";
-
-        //JSON String -> JSON Object
-        JSONObject accessTokenJsonObject = new JSONObject(accessTokenJsonData);
-
-        //access_token 추출
-        String accessToken = accessTokenJsonObject.get("access_token").toString();
-        GetUserInfoService getUserInfoService = new GetUserInfoService();
-        String userInfo = getUserInfoService.getUserInfo(accessToken);
-
-        //JSON String -> JSON Object
-        JSONObject userInfoJsonObject = new JSONObject(userInfo);
-
-        //유저의 Email 추출
-        JSONObject kakaoAccountJsonObject = (JSONObject)userInfoJsonObject.get("kakao_account");
-        String email = kakaoAccountJsonObject.get("email").toString();
-
-
-        //View에서 사용할 변수 설정
-        model.addAttribute("email", email);
-        model.addAttribute("access_token", accessToken);
-        return "index";
-    }*/
 }
