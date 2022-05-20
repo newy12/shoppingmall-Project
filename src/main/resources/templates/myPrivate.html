@@ -80,12 +80,6 @@
             <td></td>
           </tr>
           <tr>
-            <th scope="row" style="width: 100px; height: 70px;">비밀번호</th>
-            <td><input  type="password" style="width: 500px;background-color: whitesmoke" th:value="${member.get().getUserPassword()}" name="userPassword" readonly/></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
             <th scope="row" style="width: 100px; height: 70px;">주소</th>
             <td><input type="text" style="width: 500px;background-color: whitesmoke" th:value="${member.get().getAddress()} + ${member.get().getAddressDetail()}"readonly th:name="${member.get().getAddress()}"/></td>
             <td></td>
@@ -95,9 +89,9 @@
         </table>
         <div style="float: right">
         <button type="button" data-bs-toggle="modal" href="#exampleModalToggle" class="btn btn-outline-primary">비밀번호 초기화</button>
-        <button id="passwordChange2" type="button" class="btn btn-outline-primary">비밀번호 변경</button>
+        <button data-bs-toggle="modal" type="button" href="#exampleModalToggle2" class="btn btn-outline-primary">비밀번호 변경</button>
          </form>
-        <button type="button" class="btn btn-outline-secondary">메인페이지</button>
+        <a type="button" href="/" class="btn btn-outline-secondary">메인페이지</a>
         </div>
 
         </div>
@@ -114,12 +108,35 @@
         <div class="modal-body">
           <label for="email" class="form-label">본인의 이메일 주소를 적어주세요.</label>
           <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon3">이메일 주소</span>
+            <span class="input-group-text" th:id="basic-addon3">이메일 주소</span>
             <input type="text" class="form-control" id="email" aria-describedby="basic-addon3" />
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" id="passwordClean" data-bs-toggle="modal">메일 발송</button>
+          <button class="btn btn-primary" data-bs-target="#exampleModalToggle" id="passwordClean" data-bs-toggle="modal">메일 발송</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--비밀번호 변경 모달 -->
+  <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalToggleLabel2">비밀번호 변경하기</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label for="password" class="form-label">변경할 비밀번호를 적어주세요.</label>
+          <div class="input-group mb-3">
+            <span class="input-group-text" th:id="basic-addon3">변경할 비밀번호</span>
+            <input type="password" class="form-control" id="password" aria-describedby="basic-addon3" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="passwordChange" data-bs-target="#exampleModalToggle2"  data-bs-toggle="modal">변경 하기</button>
         </div>
       </div>
     </div>
@@ -130,6 +147,28 @@
   <!-- Core theme JS-->
   <script src="/static/j/scripts.js"></script>
   <script>
+    $('#passwordChange').click(function(){
+      let token = $("meta[name='_csrf']").attr("content");
+      let header = $("meta[name='_csrf_header']").attr("content");
+      let password = $('#password').val();
+      $.ajax({
+        url:"/passwordChange",
+        data:{password:password},
+        type:"POST",
+        beforeSend : function(xhr){
+          xhr.setRequestHeader(header, token);
+        },
+        success:function () {
+          alert("비밀번호가 변경되었습니다.");
+          location.reload();
+
+        },
+        error:function () {
+          alert("실패");
+        }
+
+      });
+    });
     $('#passwordClean').click(function(){
       let token = $("meta[name='_csrf']").attr("content");
       let header = $("meta[name='_csrf_header']").attr("content");
