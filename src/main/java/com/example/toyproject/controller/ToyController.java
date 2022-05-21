@@ -36,40 +36,30 @@ public class ToyController {
     public String topSearch(String keyword, Model model) {
         List<Item> item = itemService.findByItemNameContaining(keyword);
         model.addAttribute("item", item);
-        return "shirtClothes";
-    }
-
-    @GetMapping("/topClothes")
-    public String top(Model model) {
-        List<Item> items = itemService.findByCategory(ItemType.Top);
-        model.addAttribute("item", itemService.findByCategory(ItemType.Top));
         return "topClothes";
     }
+    @GetMapping("/Clothes")
+    public String top(Model model, @RequestParam("type")String clothType) {
 
-    @GetMapping("/bottomClothes")
-    public String bottom(Model model) {
-        model.addAttribute("item", itemService.findByCategory(ItemType.Bottom));
-        return "bottomClothes";
+        switch(clothType) {
+            case "Top":
+                model.addAttribute("item", itemService.findByCategory(ItemType.Top));
+                return "topClothes";
+            case "Bottom":
+                model.addAttribute("item", itemService.findByCategory(ItemType.Bottom));
+                return "topClothes";
+            case "Shirt":
+                model.addAttribute("item", itemService.findByCategory(ItemType.Shirt));
+                return "topClothes";
+            case "Shoes":
+                model.addAttribute("item", itemService.findByCategory(ItemType.Shoes));
+                return "topClothes";
+            case "Acc":
+                model.addAttribute("item", itemService.findByCategory(ItemType.Acc));
+                return "topClothes";
+        }
+        return null;
     }
-
-    @GetMapping("/shirtClothes")
-    public String shirt(Model model) {
-        model.addAttribute("item", itemService.findByCategory(ItemType.Shirt));
-        return "shirtClothes";
-    }
-
-    @GetMapping("/shoesClothes")
-    public String shoes(Model model) {
-        model.addAttribute("item", itemService.findByCategory(ItemType.Shoes));
-        return "shoesClothes";
-    }
-
-    @GetMapping("/accClothes")
-    public String acc(Model model) {
-        model.addAttribute("item", itemService.findByCategory(ItemType.Acc));
-        return "accClothes";
-    }
-
 
     @GetMapping("/signup")
     public String signup() {
@@ -104,6 +94,7 @@ public class ToyController {
         if (OptItem.isPresent()) {
             model.addAttribute("item", OptItem.get());
             model.addAttribute("replyList", replyList);
+
             return "itemDetail";
         } else {
             return "error/404";
@@ -201,8 +192,19 @@ public class ToyController {
     }
 
     @GetMapping("/orderList")
-    public String orderList() {
-        return "orderList";
+    public String orderList(@AuthenticationPrincipal User user,HttpSession httpSession,Model model) {
+        if(httpSession.getAttribute("userName") == null){
+            Member member = memberService.findByUserId(user.getUsername()).get();
+            List<Pocket> pocketList = pocketService.findByMemberAndLocation(member,Location.orderComplete);
+            model.addAttribute("pocketList",pocketList);
+            return "orderList";
+        }else{
+            Member member = memberService.findByUserId((String) httpSession.getAttribute("userName")).get();
+            List<Pocket> pocketList = pocketService.findByMemberAndLocation(member,Location.orderComplete);
+            model.addAttribute("pocketList",pocketList);
+            return "orderList";
+        }
+
     }
 
     @GetMapping("/myPrivate")
@@ -394,7 +396,25 @@ public class ToyController {
         Member member = memberService.findByUserId(user.getUsername()).get();
         member.setPassword(passwordEncoder.encode(password));
         memberService.save(member);
-
+    }
+    @PostMapping("/orderComplete")
+    @ResponseBody
+    public void orderDelete(@AuthenticationPrincipal User user, HttpSession httpSession){
+        if(httpSession.getAttribute("userName") == null){
+            Member member = memberService.findByUserId(user.getUsername()).get();
+            List<Pocket> pocket = pocketService.findByMemberAndLocation(member,Location.order);
+            for (int i = 0; i < pocket.size(); i++) {
+                pocket.get(i).setLocation(Location.orderComplete);
+                pocketService.save(pocket.get(i));
+            }
+        }else{
+            Member member = memberService.findByUserId((String) httpSession.getAttribute("userName")).get();
+            List<Pocket> pocket = pocketService.findByMemberAndLocation(member,Location.order);
+            for (int i = 0; i < pocket.size(); i++) {
+                pocket.get(i).setLocation(Location.orderComplete);
+                pocketService.save(pocket.get(i));
+            }
+        }
     }
 
 }

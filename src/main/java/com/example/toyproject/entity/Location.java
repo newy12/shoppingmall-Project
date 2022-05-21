@@ -1,5 +1,5 @@
 package com.example.toyproject.entity;
 
 public enum Location {
-    order,pocket
+    order,pocket,orderComplete
 }

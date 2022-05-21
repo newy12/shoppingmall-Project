@@ -1,8 +1,6 @@
 package com.example.toyproject.controller;
 
-import com.example.toyproject.entity.Files;
-import com.example.toyproject.entity.Item;
-import com.example.toyproject.entity.Member;
+import com.example.toyproject.entity.*;
 import com.example.toyproject.repository.FilesRepository;
 import com.example.toyproject.repository.ItemRepository;
 import com.example.toyproject.repository.MemberRepository;
@@ -25,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,6 +32,8 @@ public class adminController {
     private final ItemService itemService;
     private final MemberService memberService;
     private final FilesService filesService;
+
+    private final PocketService pocketService;
 
     @Value("${files.files-dir}")
     private String fileDir;
@@ -79,7 +80,9 @@ public class adminController {
         return "admin/memberIdentity";
     }
     @GetMapping("/orderCheck")
-    public String orderCheck() {
+    public String orderCheck(Model model) {
+        List<Pocket> pocketList = pocketService.findAllByLocation(Location.orderComplete);
+        model.addAttribute("pocketList",pocketList);
         return "admin/orderCheck";
     }
 

@@ -39,4 +39,14 @@ public class PocketService {
     public Optional<Pocket> findById(Long id) {
         return pocketRepository.findById(id);
     }
+
+    public void deleteByMemberIdAndLocation(Long memberId, Location order) {
+        pocketRepository.deleteByMemberIdAndLocation(memberId, order);
+    }
+
+
+
+    public List<Pocket> findAllByLocation(Location orderComplete) {
+        return pocketRepository.findAllByLocation(orderComplete);
+    }
 }

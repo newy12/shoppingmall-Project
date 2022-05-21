@@ -24,5 +24,8 @@ public interface PocketRepository extends JpaRepository<Pocket,Long> {
     void deleteByMemberAndLocation(Member member,Location location);
 
 
+    @Transactional
+    void deleteByMemberIdAndLocation(Long memberId, Location order);
 
+    List<Pocket> findAllByLocation(Location orderComplete);
 }
