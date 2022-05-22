@@ -58,7 +58,7 @@ public class ToyController {
                 model.addAttribute("item", itemService.findByCategory(ItemType.Acc));
                 return "topClothes";
         }
-        //젠킨스 테스트233
+        //젠킨스 테스트2333
         return null;
     }
 
