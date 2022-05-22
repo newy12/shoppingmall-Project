@@ -85,5 +85,5 @@ public class adminController {
         model.addAttribute("pocketList",pocketList);
         return "admin/orderCheck";
     }
-    //수정
+    //빌드테스트
 }
