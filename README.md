@@ -39,6 +39,7 @@
 
 감사합니다.
 
+jenkins test
 
 
 
