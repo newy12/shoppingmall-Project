@@ -39,7 +39,10 @@
 
 감사합니다.
 
-jenkins test
+jenkins webhook test
+
+slack test 
+
 
 
 
