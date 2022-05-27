@@ -28,7 +28,7 @@
 - Programming Language
 <img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=JAVA&logoColor=white"> 
 - Persistence Framework 
-    <img src="https://img.shields.io/badge/Jpa-007396?style=for-the-badge&logo=Jpa&logoColor=white">
+    <img src="https://img.shields.io/badge/Jpa-007396?style=for-the-badge&logo=Jpa&logoColor=white"    
 - IDE
  <img src="https://img.shields.io/badge/intellj IDEA-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white">
 - CI/CD
