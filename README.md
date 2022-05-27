@@ -21,21 +21,29 @@
 ## 기술스택
 - OS
 <img src="https://img.shields.io/badge/mac OS-000000?style=for-the-badge&logo=mac&logoColor=white">
-- OS
+
+- Framework
 <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white">
+
 - Template engine
 <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=Thymeleaf&logoColor=white"> 
+
 - Programming Language
 <img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=JAVA&logoColor=white"> 
+
 - Persistence Framework 
     <img src="https://img.shields.io/badge/Jpa-007396?style=for-the-badge&logo=Jpa&logoColor=white"    
+         
 - IDE
  <img src="https://img.shields.io/badge/intellj IDEA-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white">
+ 
 - CI/CD
  <img src="https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=Docker&logoColor=white">  <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white">
+ 
  - Collaboration & tools
  <img src="https://img.shields.io/badge/GIT-D24939?style=for-the-badge&logo=GIT&logoColor=white"> <img src="https://img.shields.io/badge/GITHUB-181717?style=for-the-badge&logo=GITHUB&logoColor=white"> <img src="https://img.shields.io/badge/SLACK-4A154B?style=for-the-badge&logo=SLACK&logoColor=white">
 <img src="https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"> <img src="https://img.shields.io/badge/ngrok-1F1E37?style=for-the-badge&logo=ngrok&logoColor=white"> 
+
 - DataBase
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/h2-1F1E37?style=for-the-badge&logo=h2&logoColor=white">
 
