@@ -21,7 +21,7 @@
 ## 기술스택
 - OS
 <img src="https://img.shields.io/badge/mac OS-000000?style=for-the-badge&logo=mac&logoColor=white">
-- Framework
+- OS
 <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white">
 - Template engine
 <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=Thymeleaf&logoColor=white"> 
