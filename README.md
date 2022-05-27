@@ -21,7 +21,7 @@
 ## 기술스택
 - OS
 <img src="https://img.shields.io/badge/mac OS-000000?style=for-the-badge&logo=mac&logoColor=white">
-- Framework
+- Framework
 <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white">
 - Template engine
 <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=Thymeleaf&logoColor=white"> 
@@ -74,7 +74,7 @@
 소셜로그인
 - 카카오 로그인 API 인증 및 허가
 
-비밀번호 초기화
+비밀번호 초기화
 - SMTP 프로토컬 활용 및 이메일 전송
 
 회원가입
