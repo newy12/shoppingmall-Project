@@ -117,6 +117,14 @@
 ![erd2](https://user-images.githubusercontent.com/73875312/170714352-932d627b-5771-4c43-ae19-c1fd0024c89a.png)
 
 
+## 시연 동영상
+
+- **[시연 동영상](https://yjkim-dev.tistory.com/17)**
+- **에러페이지 화면**
+![스크린샷 2022-05-27 오후 11 46 39](https://user-images.githubusercontent.com/73875312/170723091-d1048f77-c347-42f3-aad6-4c5c4436b849.png)
+
+
+
 
 
 
