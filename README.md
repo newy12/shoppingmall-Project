@@ -95,7 +95,7 @@
 - **error 핸들러를 통한 404페이지 커스터마이징**
 - **아임포트API 활용 및 결제(KG이니시스)**<br /><br />
 
-## :open_file_folder: 배포
+## :open_file_folder: 빌드
 
 - **Docker 환경에 Jenkins 이미지 컨테이너 구축**
 - **Jenkins 와 Github Repository 연동**
