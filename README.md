@@ -10,6 +10,7 @@
 - **지난 1년간 실무 경험을 토대로 사용하는 기술에 대한 복습 및 새로운 기술의 접목**
 - **CI/CD 파이프라인 구축 및 자동빌드**
 - **Docker를 활용한 이미지 컨테이너 호스트 및 관리**
+- **클라우드 이용한 배포 및 인스턴스 관리** 
 - **상태코드에 따른 예외처리**<br /><br /><br /><br /><br />
 
 ## :grey_exclamation:  진행순서
@@ -17,8 +18,8 @@
 - **2. spring boot maven 프로젝트 intellij 개발 환경 구축**
 - **3. mysql 서버 구축**
 - **4. 개발**
-- **5. CI/CD 파이프라인 구축(docker container 및 jenkins 자동 배포 및 slack 알람**<br /><br /><br /><br /><br />
-
+- **5. CI/CD 파이프라인 구축(docker container 및 jenkins 자동 빌드 및 slack 알람**<br /><br /><br /><br /><br />
+- **6. AWS Cloud EC2 및 RDS 활용한 프로젝트 배포
 ## :hammer: 기술스택
 - **OS**
 
@@ -102,6 +103,10 @@
 - **ngrok을 이용한 외부망 localhost 접근 구축**
 - **WebHook을 이용하여 Repository push 이벤트 발생시 Jenkins 자동 빌드**
 - **Jenkins 빌드 성공 및 실패 시 slack을 통한 알림 메세지 발송**<br /><br />
+
+## :open_file_folder: 배포
+- ** AWS Cloud 의 ec2 ubuntu os 프로젝트 배포**
+- ** ec2 및 rds 연동 데이터베이스 인스턴스 분리**
  
  ## :egg: 프로젝트 정리 blog
 
