@@ -108,7 +108,7 @@
 - **Jenkins 빌드 성공 및 실패 시 slack을 통한 알림 메세지 발송**<br /><br />
 
 ## :open_file_folder: 배포
-- **AWS Cloud 의 ec2 ubuntu os 프로젝트 배포**
+- **AWS Cloud 의 ec2 Ubuntu os 프로젝트 배포**
 - **ec2 및 rds 연동 데이터베이스 인스턴스 분리**<br /><br />
  
  ## :egg: 프로젝트 정리 blog
