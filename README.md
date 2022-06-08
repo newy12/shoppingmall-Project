@@ -10,7 +10,7 @@
 - **지난 1년간 실무 경험을 토대로 사용하는 기술에 대한 복습 및 새로운 기술의 접목**
 - **CI/CD 파이프라인 구축 및 자동빌드**
 - **Docker를 활용한 이미지 컨테이너 호스트 및 관리**
-- **AWS Cloud를 이용한 배포 및 인스턴스 관리** 
+- **AWS Cloud를 이용한 ubuntu os 배포 및 인스턴스 관리** 
 - **상태코드에 따른 예외처리**<br /><br /><br /><br /><br />
 
 ## :grey_exclamation:  진행순서
@@ -108,8 +108,8 @@
 - **Jenkins 빌드 성공 및 실패 시 slack을 통한 알림 메세지 발송**<br /><br />
 
 ## :open_file_folder: 배포
-- ** AWS Cloud 의 ec2 ubuntu os 프로젝트 배포**
-- ** ec2 및 rds 연동 데이터베이스 인스턴스 분리**
+- **AWS Cloud 의 ec2 ubuntu os 프로젝트 배포**
+- **ec2 및 rds 연동 데이터베이스 인스턴스 분리**
  
  ## :egg: 프로젝트 정리 blog
 
