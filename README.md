@@ -37,7 +37,7 @@
 - **Persistence Framework**
 
 <img src="https://img.shields.io/badge/Jpa-007396?style=for-the-badge&logo=Jpa&logoColor=white">    <br /><br />        
-- **IDE**d
+- **IDE**
 
 <img src="https://img.shields.io/badge/intellj IDEA-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white"><br /><br />
 - **CI/CD**
